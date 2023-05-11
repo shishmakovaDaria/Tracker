@@ -10,4 +10,5 @@ import UIKit
 
 extension UIColor {
     static var ypBlue: UIColor {UIColor(named: "Blue")!}
+    static var ypGray: UIColor {UIColor(named: "Gray")!}
 }
