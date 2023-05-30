@@ -12,8 +12,8 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let trackersViewController = TrackersViewController()
-        trackersViewController.tabBarItem = UITabBarItem(title: "Трекеры",
+        let trackersNavigationContoller = TrackersNavigationContoller()
+        trackersNavigationContoller.tabBarItem = UITabBarItem(title: "Трекеры",
                                                          image: UIImage(systemName: "record.circle.fill"),
                                                          selectedImage: nil)
         
@@ -22,7 +22,7 @@ final class TabBarController: UITabBarController {
                                                            image: UIImage(systemName: "hare.fill"),
                                                            selectedImage: nil)
         
-        self.viewControllers = [trackersViewController, statisticsViewController]
+        self.viewControllers = [trackersNavigationContoller, statisticsViewController]
         
         let grayView = UIView()
         grayView.backgroundColor = .ypGray
