@@ -22,7 +22,7 @@ final class TrackersNavigationContoller: UINavigationController {
             with: UIImage(named: "Plus")!,
             target: self,
             action: nil)
-        //plusButton.addTarget(self, action: #selector(plusButtonDidTap(_:)), for: .touchUpInside)
+        plusButton.addTarget(self, action: #selector(plusButtonDidTap(_:)), for: .touchUpInside)
         plusButton.tintColor = .black
         view.addSubview(plusButton)
         plusButton.translatesAutoresizingMaskIntoConstraints = false
@@ -32,5 +32,9 @@ final class TrackersNavigationContoller: UINavigationController {
             plusButton.topAnchor.constraint(equalTo: navigationBar.topAnchor),
             plusButton.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
         ])
+    }
+    
+    @IBAction private func plusButtonDidTap(_ sender: Any?) {
+        controller.showTrackersCreationViewController()
     }
 }

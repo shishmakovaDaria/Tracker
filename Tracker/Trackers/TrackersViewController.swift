@@ -23,6 +23,7 @@ final class TrackersViewController: UIViewController {
                                       trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻")])]
     
     var completedTrackers: [TrackerRecord] = []
+    //var currentDate: Date
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +39,8 @@ final class TrackersViewController: UIViewController {
             TrackersHeaders.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
     }
     
-    @IBAction private func plusButtonDidTap(_ sender: Any?) {
-        // to be done
+    func showTrackersCreationViewController() {
+        present(TrackersCreationViewController(), animated: true)
     }
     
     private func addCollectionView() {
@@ -120,7 +121,6 @@ final class TrackersViewController: UIViewController {
             label.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
             label.topAnchor.constraint(equalTo: star.bottomAnchor, constant: 8)
         ])
-        
     }
 }
 

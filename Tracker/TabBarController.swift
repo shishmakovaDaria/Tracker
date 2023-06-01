@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
                                                            selectedImage: nil)
         
         self.viewControllers = [trackersNavigationContoller, statisticsViewController]
-        self.tabBar.barTintColor = .white
+        self.tabBar.backgroundColor = .white
         
         let grayView = UIView()
         grayView.backgroundColor = .ypGray
