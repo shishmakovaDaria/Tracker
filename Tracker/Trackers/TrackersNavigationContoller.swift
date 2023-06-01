@@ -15,7 +15,6 @@ final class TrackersNavigationContoller: UINavigationController {
     override func viewDidLoad() {
         viewControllers = [controller]
         addPlusButton()
-        addDate()
     }
     
     private func addPlusButton() {
@@ -32,20 +31,6 @@ final class TrackersNavigationContoller: UINavigationController {
             plusButton.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 18),
             plusButton.topAnchor.constraint(equalTo: navigationBar.topAnchor),
             plusButton.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
-        ])
-    }
-    
-    private func addDate() {
-        let datePicker = UIDatePicker()
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        view.addSubview(datePicker)
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            datePicker.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -16),
-            datePicker.topAnchor.constraint(equalTo: navigationBar.topAnchor),
-            datePicker.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
         ])
     }
 }

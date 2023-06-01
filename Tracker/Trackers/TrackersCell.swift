@@ -8,7 +8,14 @@
 import Foundation
 import UIKit
 
+protocol TrackersCellDelegate: AnyObject {
+    func trackersButtonDidTap(_ cell: TrackersCell)
+}
+
 final class TrackersCell: UICollectionViewCell {
+    
+    weak var delegate: TrackersCellDelegate?
+    
     let colorView = UIView()
     let trackerName = UILabel()
     let emoji = UILabel()
@@ -93,6 +100,7 @@ final class TrackersCell: UICollectionViewCell {
         let button = UIButton.systemButton(with: UIImage(named: "Plus")!,
                                            target: self,
                                            action: nil)
+        button.addTarget(self, action: #selector(trackerButtonClicked(_:)), for: .touchUpInside)
         button.tintColor = .white
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -103,6 +111,20 @@ final class TrackersCell: UICollectionViewCell {
             button.centerXAnchor.constraint(equalTo: colorRound.centerXAnchor),
             button.centerYAnchor.constraint(equalTo: colorRound.centerYAnchor)
         ])
+    }
+    
+    func markTrackerAsDone(isDone: Bool) {
+        if isDone {
+            button.imageView?.image = UIImage(named: "Done")
+            //colorRound.backgroundColor?.withAlphaComponent(0.3)
+        } else {
+            button.imageView?.image = UIImage(named: "Plus")
+            //colorRound.backgroundColor?.withAlphaComponent(1)
+        }
+    }
+    
+    @IBAction private func trackerButtonClicked(_ sender: Any?) {
+        delegate?.trackersButtonDidTap(self)
     }
     
     required init?(coder: NSCoder) {
