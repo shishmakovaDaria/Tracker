@@ -32,6 +32,7 @@ final class TrackersCreationViewController: UIViewController {
         habitButton.backgroundColor = .black
         habitButton.setTitle("Привычка", for: .normal)
         habitButton.layer.cornerRadius = 16
+        habitButton.addTarget(self, action: #selector(habitButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(habitButton)
         habitButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -46,6 +47,7 @@ final class TrackersCreationViewController: UIViewController {
         eventButton.backgroundColor = .black
         eventButton.setTitle("Нерегулярное событие", for: .normal)
         eventButton.layer.cornerRadius = 16
+        eventButton.addTarget(self, action: #selector(eventButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(eventButton)
         eventButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -55,5 +57,13 @@ final class TrackersCreationViewController: UIViewController {
             eventButton.heightAnchor.constraint(equalTo: habitButton.heightAnchor),
             eventButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant: 16)
         ])
+    }
+    
+    @IBAction private func habitButtonDidTap(_ sender: Any?) {
+        present(HabitCreationViewController(), animated: true)
+    }
+    
+    @IBAction private func eventButtonDidTap(_ sender: Any?) {
+        present(EventCreationViewController(), animated: true)
     }
 }

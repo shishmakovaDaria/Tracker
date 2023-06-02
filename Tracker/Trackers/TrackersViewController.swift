@@ -9,10 +9,10 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    //var categories: [TrackerCategory] = []
-    var categories = [TrackerCategory(header: "Здоровье",
+    //private var categories: [TrackerCategory] = []
+    private var categories = [TrackerCategory(header: "Здоровье",
                                       trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️"),
                                                  Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧"),
                                                  Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸")]),
@@ -22,8 +22,8 @@ final class TrackersViewController: UIViewController {
                       TrackerCategory(header: "Радостные мелочи",
                                       trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻")])]
     
-    var completedTrackers: [TrackerRecord] = []
-    //var currentDate: Date
+    private var completedTrackers: [TrackerRecord] = []
+    //private var currentDate: Date
     
     override func viewDidLoad() {
         super.viewDidLoad()

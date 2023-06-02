@@ -11,7 +11,9 @@ import UIKit
 extension UIColor {
     static var ypBlue: UIColor {UIColor(named: "Blue")!}
     static var ypGray: UIColor {UIColor(named: "Gray")!}
+    static var ypRed: UIColor {UIColor(named: "Red")!}
     static var searchBarColor: UIColor {UIColor(named: "SearchBar")!}
+    static var backgroundDay: UIColor {UIColor(named: "BackgroundDay")!}
     static var selection1: UIColor {UIColor(named: "Selection1")!}
     static var selection2: UIColor {UIColor(named: "Selection2")!}
     static var selection3: UIColor {UIColor(named: "Selection3")!}
