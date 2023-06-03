@@ -113,7 +113,7 @@ final class TrackersViewController: UIViewController {
         
         let label = UILabel()
         label.text = "Что будем отслеживать?"
-        label.font = .systemFont(ofSize: 12)
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         emptyView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         

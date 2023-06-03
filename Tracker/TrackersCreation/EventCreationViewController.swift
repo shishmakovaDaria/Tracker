@@ -24,7 +24,8 @@ final class EventCreationViewController: UIViewController {
     private func configureView() {
         let label = UILabel()
         label.text = "Новое нерегулярное событие"
-        label.font = .systemFont(ofSize: 16)
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -33,7 +34,7 @@ final class EventCreationViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-        let trackersName = TextFieldWithPadding()
+        let trackersName = CustomTextField()
         trackersName.text = "Введите название трекера"
         trackersName.textColor = .ypGray
         trackersName.font = .systemFont(ofSize: 17)

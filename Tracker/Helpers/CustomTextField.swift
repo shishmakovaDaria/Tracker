@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class TextFieldWithPadding: UITextField {
+class CustomTextField: UITextField {
     var textPadding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
@@ -19,5 +19,16 @@ class TextFieldWithPadding: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.editingRect(forBounds: bounds)
         return rect.inset(by: textPadding)
+    }
+    
+    func isValid() -> Bool {
+        guard let text = self.text,
+              !text.isEmpty
+        else { return false }
+        
+        guard text.count <= 38
+        else { return false }
+        
+        return true
     }
 }

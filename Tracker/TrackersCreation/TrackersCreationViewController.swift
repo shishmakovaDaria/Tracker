@@ -19,7 +19,8 @@ final class TrackersCreationViewController: UIViewController {
     private func configureView() {
         let label = UILabel()
         label.text = "Создание трекера"
-        label.font = .systemFont(ofSize: 16)
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -29,8 +30,9 @@ final class TrackersCreationViewController: UIViewController {
         ])
         
         let habitButton = UIButton()
-        habitButton.backgroundColor = .black
+        habitButton.backgroundColor = .ypBlack
         habitButton.setTitle("Привычка", for: .normal)
+        habitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         habitButton.layer.cornerRadius = 16
         habitButton.addTarget(self, action: #selector(habitButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(habitButton)
@@ -44,8 +46,9 @@ final class TrackersCreationViewController: UIViewController {
         ])
         
         let eventButton = UIButton()
-        eventButton.backgroundColor = .black
+        eventButton.backgroundColor = .ypBlack
         eventButton.setTitle("Нерегулярное событие", for: .normal)
+        eventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         eventButton.layer.cornerRadius = 16
         eventButton.addTarget(self, action: #selector(eventButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(eventButton)

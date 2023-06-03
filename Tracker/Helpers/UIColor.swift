@@ -12,6 +12,7 @@ extension UIColor {
     static var ypBlue: UIColor {UIColor(named: "Blue")!}
     static var ypGray: UIColor {UIColor(named: "Gray")!}
     static var ypRed: UIColor {UIColor(named: "Red")!}
+    static var ypBlack: UIColor {UIColor(named: "Black")!}
     static var searchBarColor: UIColor {UIColor(named: "SearchBar")!}
     static var backgroundDay: UIColor {UIColor(named: "BackgroundDay")!}
     static var selection1: UIColor {UIColor(named: "Selection1")!}

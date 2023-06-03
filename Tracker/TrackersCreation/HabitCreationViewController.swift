@@ -10,8 +10,14 @@ import UIKit
 
 final class HabitCreationViewController: UIViewController {
     
-    private var tableView = UITableView()
-    private let tableCells = ["Категория", "Расписание"]
+    private let tableView = UITableView()
+    private let trackersName = CustomTextField()
+    private let errorLabel = UILabel()
+    private let createButton = UIButton()
+    private var newTrackersName: String?
+    private let tableHeaders = ["Категория", "Расписание"]
+    let schedule: [String] = []
+    let category = "Важное"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,13 +25,14 @@ final class HabitCreationViewController: UIViewController {
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
     }
     
     private func configureView() {
         let label = UILabel()
         label.text = "Новая привычка"
-        label.font = .systemFont(ofSize: 16)
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -34,12 +41,15 @@ final class HabitCreationViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-        let trackersName = TextFieldWithPadding()
-        trackersName.text = "Введите название трекера"
-        trackersName.textColor = .ypGray
+        trackersName.placeholder = "Введите название трекера"
+        trackersName.textColor = .ypBlack
         trackersName.font = .systemFont(ofSize: 17)
         trackersName.backgroundColor = .backgroundDay
         trackersName.layer.cornerRadius = 16
+        trackersName.clearButtonMode = .whileEditing
+        trackersName.returnKeyType = .go
+        trackersName.delegate = self
+        trackersName.addTarget(self, action: #selector(textFieldDidChange(_:)), for: UIControl.Event.editingChanged)
         view.addSubview(trackersName)
         trackersName.translatesAutoresizingMaskIntoConstraints = false
         
@@ -49,6 +59,20 @@ final class HabitCreationViewController: UIViewController {
             trackersName.heightAnchor.constraint(equalToConstant: 75),
             trackersName.topAnchor.constraint(equalTo: view.topAnchor, constant: 87)
         ])
+        
+        errorLabel.text = "Ограничение 38 символов"
+        errorLabel.font = .systemFont(ofSize: 17)
+        errorLabel.textColor = .ypRed
+        
+        view.addSubview(errorLabel)
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            errorLabel.topAnchor.constraint(equalTo: trackersName.bottomAnchor)
+        ])
+        
+        errorLabel.isHidden = true
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -76,8 +100,8 @@ final class HabitCreationViewController: UIViewController {
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
-        let createButton = UIButton()
         createButton.setImage(UIImage(named: "CreateButton"), for: .normal)
+        createButton.addTarget(self, action: #selector(createButtonDidTap(_:)), for: .touchUpInside)
         stackView.addArrangedSubview(createButton)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -88,7 +112,6 @@ final class HabitCreationViewController: UIViewController {
         
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
-        tableView.tableFooterView = UIView()
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -103,20 +126,40 @@ final class HabitCreationViewController: UIViewController {
     @IBAction private func cancelButtonDidTap(_ sender: Any?) {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction private func createButtonDidTap(_ sender: Any?) {
+        // to do
+        
+    }
+    
+    @IBAction func textFieldDidChange(_ textField: UITextField) {
+        guard trackersName.isValid() else {
+            createButton.isEnabled = false
+            errorLabel.isHidden = false
+            return
+        }
+        createButton.isEnabled = true
+        errorLabel.isHidden = true
+    }
 }
 
 //MARK: - UITableViewDataSource
 extension HabitCreationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableCells.count
+        return tableHeaders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = tableCells[indexPath.row]
-        cell.backgroundColor = .backgroundDay
-        cell.accessoryType = .disclosureIndicator
-        if indexPath.row == tableCells.count - 1 {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
+        cell.header.text = tableHeaders[indexPath.row]
+        if indexPath.row == 0 {
+            cell.text.text = category
+        } else {
+            cell.text.text = schedule.joined(separator: ", ")
+        }
+
+        if indexPath.row == tableHeaders.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -129,6 +172,26 @@ extension HabitCreationViewController: UITableViewDataSource {
 extension HabitCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.row == 0 {
+            let VC = CategoryViewController()
+            VC.modalTransitionStyle = .flipHorizontal
+            present(VC, animated: true)
+        } else {
+            let VC = ScheduleViewController()
+            VC.modalTransitionStyle = .flipHorizontal
+            present(VC, animated: true)
+        }
     }
 }
 
+//MARK: - UITextFieldDelegate
+extension HabitCreationViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        trackersName.resignFirstResponder()
+        
+        if let text = trackersName.text {
+            newTrackersName = text
+        }
+        return true
+    }
+}

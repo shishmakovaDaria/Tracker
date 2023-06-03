@@ -23,7 +23,7 @@ final class TrackersNavigationContoller: UINavigationController {
             target: self,
             action: nil)
         plusButton.addTarget(self, action: #selector(plusButtonDidTap(_:)), for: .touchUpInside)
-        plusButton.tintColor = .black
+        plusButton.tintColor = .ypBlack
         view.addSubview(plusButton)
         plusButton.translatesAutoresizingMaskIntoConstraints = false
         

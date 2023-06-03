@@ -75,7 +75,7 @@ final class TrackersCell: UICollectionViewCell {
         ])
         
         day.font = .systemFont(ofSize: 12)
-        day.textColor = .black
+        day.textColor = .ypBlack
         contentView.addSubview(day)
         day.translatesAutoresizingMaskIntoConstraints = false
         
