@@ -42,7 +42,7 @@ final class CategoryViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-        let addButton = UIButton()
+        /*let addButton = UIButton()
         addButton.backgroundColor = .ypBlack
         addButton.setTitle("Добавить категорию", for: .normal)
         addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -56,7 +56,7 @@ final class CategoryViewController: UIViewController {
             addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addButton.heightAnchor.constraint(equalToConstant: 60),
             addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
-        ])
+        ])*/
     }
     
     private func addPlaceholder() {

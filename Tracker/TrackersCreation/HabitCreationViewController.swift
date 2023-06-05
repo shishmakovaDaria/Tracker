@@ -151,12 +151,13 @@ final class HabitCreationViewController: UIViewController {
     @IBAction private func createButtonDidTap(_ sender: Any?) {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
         let newTracker = Tracker(
-            id: 1, // это надо переделать
+            id: (TrackersStorage.shared.trackers.count + 1),
             name: newTrackersName ?? "",
             color: colors.randomElement() ?? UIColor(),
             emogi: emoji.randomElement() ?? "",
             schedule: schedule)
-        delegate?.addTracker(tracker: newTracker)
+        TrackersStorage.shared.addNewTracker(tracker: newTracker)
+        //delegate?.addTracker(tracker: newTracker)
     }
     
     @IBAction func textFieldDidChange(_ textField: UITextField) {
@@ -239,7 +240,7 @@ extension HabitCreationViewController: CategoryViewControllerDelegate {
     }
 }
 
-//MARK: - CategoryViewControllerDelegate
+//MARK: - ScheduleViewControllerDelegate
 extension HabitCreationViewController: ScheduleViewControllerDelegate {
     func addSchedule(chosenSchedule: [String]) {
         self.schedule = chosenSchedule.joined(separator: ", ")

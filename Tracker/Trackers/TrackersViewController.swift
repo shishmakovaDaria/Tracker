@@ -10,18 +10,21 @@ import UIKit
 final class TrackersViewController: UIViewController {
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let placeholder = UIImageView()
     
-    private var categories: [TrackerCategory] = []
-    /*private var categories = [TrackerCategory(header: "Важное",
-                                              trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: "Пн"),
-                                                         Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: "Вт"),
-                                                         Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: "Ср")]),
-                      TrackerCategory(header: "Домашний уют",
-                                      trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: "Сб"),
-                                                 Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: "Вс")]),
-                      TrackerCategory(header: "Радостные мелочи",
-                                      trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻", schedule: "Пн")])]
-    */
+    private var categories: [TrackerCategory] = [TrackerCategory(header: "Важное",
+                                                                 trackers: [])]
+    /*private var categories = [
+        TrackerCategory(header: "Важное",
+                        trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: "Пн"),
+                                   Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: "Вт"),
+                                   Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: "Ср")]),
+        TrackerCategory(header: "Домашний уют",
+                        trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: "Сб"),
+                                   Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: "Вс")]),
+        TrackerCategory(header: "Радостные мелочи",
+                        trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻", schedule: "Пн")])]*/
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     //private var currentDate: Date
     
@@ -37,6 +40,10 @@ final class TrackersViewController: UIViewController {
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(
             TrackersHeaders.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        if categories[0].trackers.count == 0 {
+            collectionView.isHidden = true
+            showPlaceholder()
+        }
     }
     
     func showTrackersCreationViewController() {
@@ -93,36 +100,33 @@ final class TrackersViewController: UIViewController {
         ])
     }
     
-    private func showStartView() {
-        let rect = CGRect(x: 0, y: 0, width: self.collectionView.bounds.size.width, height: self.collectionView.bounds.size.height)
-        let emptyView = UIView(frame: rect)
-        self.collectionView.backgroundView = emptyView
-        
-        let star = UIImageView()
-        star.image = UIImage(named: "Star")
-        star.clipsToBounds = true
-        emptyView.addSubview(star)
-        star.translatesAutoresizingMaskIntoConstraints = false
+    private func showPlaceholder() {
+        placeholder.image = UIImage(named: "Star")
+        placeholder.clipsToBounds = true
+        view.addSubview(placeholder)
+        placeholder.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            star.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
-            star.topAnchor.constraint(equalTo: view.topAnchor, constant: 402),
-            star.heightAnchor.constraint(equalToConstant: 80),
-            star.widthAnchor.constraint(equalToConstant: 80)
+            placeholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholder.topAnchor.constraint(equalTo: view.topAnchor, constant: 402),
+            placeholder.heightAnchor.constraint(equalToConstant: 80),
+            placeholder.widthAnchor.constraint(equalToConstant: 80)
         ])
         
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.font = .systemFont(ofSize: 12, weight: .medium)
-        emptyView.addSubview(label)
+        view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
-            label.topAnchor.constraint(equalTo: star.bottomAnchor, constant: 8)
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.topAnchor.constraint(equalTo: placeholder.bottomAnchor, constant: 8)
         ])
     }
     
+    
+    //можно удалить?
     func addNewTracker(newTracker: Tracker) {
         let num: Int
         var newTrackers: [Tracker]
@@ -155,17 +159,11 @@ final class TrackersViewController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if categories.count > 0 {
-            self.collectionView.backgroundView = nil
-            return categories.count
-        } else {
-            showStartView()
-            return 0
-        }
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return categories[section].trackers.count
+        return categories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -226,5 +224,27 @@ extension TrackersViewController: TrackersCellDelegate {
         //guard let indexPath = collectionView.indexPath(for: cell) else { return }
         
         cell.markTrackerAsDone(isDone: true)
+    }
+}
+
+//MARK: - TrackersStorageDelegate
+extension TrackersViewController: TrackersStorageDelegate {
+    func dataUpdated() {
+        if collectionView.isHidden == true {
+            collectionView.isHidden = false
+            //self.view.deletePlaceholder
+        }
+        
+        let num = categories[0].trackers.count
+        
+        let newCategories = [TrackerCategory(header: "Важное",
+                                             trackers: TrackersStorage.shared.trackers)]
+        
+        self.categories = newCategories
+        
+        collectionView.performBatchUpdates {
+            //collectionView.insertSections(IndexSet(integer: 0))
+            collectionView.insertItems(at: [IndexPath(row: num, section: 0)])
+        }
     }
 }
