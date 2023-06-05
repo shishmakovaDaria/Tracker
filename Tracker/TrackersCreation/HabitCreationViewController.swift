@@ -27,6 +27,8 @@ final class HabitCreationViewController: UIViewController {
     let emoji = ["⚽️", "💧", "🌺", "🥵", "😻"]
     let colors: [UIColor] = [.selection1, .selection2, .selection3, .selection4, .selection5, .selection6, .selection7, .selection8, .selection9, .selection10]
     
+    private var tableViewTopConstraint: NSLayoutConstraint?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -77,7 +79,7 @@ final class HabitCreationViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorLabel.topAnchor.constraint(equalTo: trackersName.bottomAnchor)
+            errorLabel.topAnchor.constraint(equalTo: trackersName.bottomAnchor, constant: 8)
         ])
         
         errorLabel.isHidden = true
@@ -123,10 +125,21 @@ final class HabitCreationViewController: UIViewController {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        tableViewTopConstraint = NSLayoutConstraint(
+            item: tableView,
+            attribute: .top,
+            relatedBy: .equal,
+            toItem: trackersName,
+            attribute: .bottom,
+            multiplier: 1,
+            constant: 24)
+        
+        guard let tableViewTopConstraint = tableViewTopConstraint else { return }
+        
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: trackersName.bottomAnchor, constant: 24),
+            tableViewTopConstraint,
             tableView.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
@@ -150,10 +163,14 @@ final class HabitCreationViewController: UIViewController {
         guard trackersName.isValid() else {
             createButton.isEnabled = false
             errorLabel.isHidden = false
+            tableViewTopConstraint?.constant = 62
+            view.layoutIfNeeded()
             return
         }
+        tableViewTopConstraint?.constant = 24
         createButton.isEnabled = true
         errorLabel.isHidden = true
+        view.layoutIfNeeded()
     }
 }
 
