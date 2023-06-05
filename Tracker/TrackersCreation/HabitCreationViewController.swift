@@ -8,7 +8,13 @@
 import Foundation
 import UIKit
 
+protocol HabitCreationViewControllerDelegate: AnyObject {
+    func addTracker(tracker: Tracker)
+}
+
 final class HabitCreationViewController: UIViewController {
+    
+    var delegate: HabitCreationViewControllerDelegate?
     
     private let tableView = UITableView()
     private let trackersName = CustomTextField()
@@ -16,8 +22,10 @@ final class HabitCreationViewController: UIViewController {
     private let createButton = UIButton()
     private var newTrackersName: String?
     private let tableHeaders = ["Категория", "Расписание"]
-    let schedule: [String] = []
-    let category = "Важное"
+    var schedule = ""
+    var category = ""
+    let emoji = ["⚽️", "💧", "🌺", "🥵", "😻"]
+    let colors: [UIColor] = [.selection1, .selection2, .selection3, .selection4, .selection5, .selection6, .selection7, .selection8, .selection9, .selection10]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,8 +136,14 @@ final class HabitCreationViewController: UIViewController {
     }
     
     @IBAction private func createButtonDidTap(_ sender: Any?) {
-        // to do
-        
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        let newTracker = Tracker(
+            id: 1, // это надо переделать
+            name: newTrackersName ?? "",
+            color: colors.randomElement() ?? UIColor(),
+            emogi: emoji.randomElement() ?? "",
+            schedule: schedule)
+        delegate?.addTracker(tracker: newTracker)
     }
     
     @IBAction func textFieldDidChange(_ textField: UITextField) {
@@ -153,16 +167,16 @@ extension HabitCreationViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
         cell.header.text = tableHeaders[indexPath.row]
-        if indexPath.row == 0 {
-            cell.text.text = category
-        } else {
-            cell.text.text = schedule.joined(separator: ", ")
-        }
-
+        
         if indexPath.row == tableHeaders.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
+        
+        if category != "" {
+            cell.addSecondLabel(chosen: category)
+            tableView.reloadData()
         }
         return cell
     }
@@ -174,10 +188,12 @@ extension HabitCreationViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let VC = CategoryViewController()
+            VC.delegate = self
             VC.modalTransitionStyle = .flipHorizontal
             present(VC, animated: true)
         } else {
             let VC = ScheduleViewController()
+            VC.delegate = self
             VC.modalTransitionStyle = .flipHorizontal
             present(VC, animated: true)
         }
@@ -193,5 +209,25 @@ extension HabitCreationViewController: UITextFieldDelegate {
             newTrackersName = text
         }
         return true
+    }
+}
+
+//MARK: - CategoryViewControllerDelegate
+extension HabitCreationViewController: CategoryViewControllerDelegate {
+    func addCategory(chosenCategory: String) {
+        self.category = chosenCategory
+        
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CustomTableViewCell else { return }
+        cell.addSecondLabel(chosen: category)
+    }
+}
+
+//MARK: - CategoryViewControllerDelegate
+extension HabitCreationViewController: ScheduleViewControllerDelegate {
+    func addSchedule(chosenSchedule: [String]) {
+        self.schedule = chosenSchedule.joined(separator: ", ")
+        
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CustomTableViewCell else { return }
+        cell.addSecondLabel(chosen: schedule)
     }
 }

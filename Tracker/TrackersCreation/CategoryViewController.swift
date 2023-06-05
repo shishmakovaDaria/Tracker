@@ -8,10 +8,16 @@
 import Foundation
 import UIKit
 
+protocol CategoryViewControllerDelegate: AnyObject {
+    func addCategory(chosenCategory: String)
+}
+
 final class CategoryViewController: UIViewController {
     
     let chosenCategory = "Важное"
     private let tableView = UITableView()
+    
+    var delegate: CategoryViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,5 +130,6 @@ extension CategoryViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         dismiss(animated: true)
+        delegate?.addCategory(chosenCategory: tableView.cellForRow(at: indexPath)?.textLabel?.text ?? "")
     }
 }

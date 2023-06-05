@@ -8,10 +8,16 @@
 import Foundation
 import UIKit
 
+protocol ScheduleViewControllerDelegate: AnyObject {
+    func addSchedule(chosenSchedule: [String])
+}
+
 final class ScheduleViewController: UIViewController {
     
     private let tableView = UITableView()
     private let days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    var schedule: [String] = []
+    var delegate: ScheduleViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +75,39 @@ final class ScheduleViewController: UIViewController {
     }
     
     @IBAction private func doneButtonDidTap(_ sender: Any?) {
-        //to be done
+        delegate?.addSchedule(chosenSchedule: schedule)
+        dismiss(animated: true)
+    }
+    
+    @IBAction private func switchChanged(_ sender: UISwitch) {
+        if sender.tag == 0,
+           sender.isOn {
+            schedule.append("Пн")
+        }
+        if sender.tag == 1,
+           sender.isOn {
+            schedule.append("Вт")
+        }
+        if sender.tag == 2,
+           sender.isOn {
+            schedule.append("Ср")
+        }
+        if sender.tag == 3,
+           sender.isOn {
+            schedule.append("Чт")
+        }
+        if sender.tag == 4,
+           sender.isOn {
+            schedule.append("Пт")
+        }
+        if sender.tag == 5,
+           sender.isOn {
+            schedule.append("Сб")
+        }
+        if sender.tag == 6,
+           sender.isOn {
+            schedule.append("Вс")
+        }
     }
 }
 
@@ -84,6 +122,8 @@ extension ScheduleViewController: UITableViewDataSource {
         cell.textLabel?.text = days[indexPath.row]
         cell.backgroundColor = .backgroundDay
         let toggle = UISwitch()
+        toggle.tag = indexPath.row
+        toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         toggle.onTintColor = .ypBlue
         cell.accessoryView = toggle
         
@@ -98,5 +138,18 @@ extension ScheduleViewController: UITableViewDataSource {
 
 //MARK: - UITableViewDelegate
 extension ScheduleViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+//не поняла как тут его применить :(
+enum WeekDay: String {
+    case monday = "Пн"
+    case tuesday = "Вт"
+    case wednesday = "Ср"
+    case thursday = "Чт"
+    case friday = "Пт"
+    case saturday = "Сб"
+    case sunday = "Вс"
 }

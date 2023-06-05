@@ -11,17 +11,17 @@ final class TrackersViewController: UIViewController {
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    //private var categories: [TrackerCategory] = []
-    private var categories = [TrackerCategory(header: "Здоровье",
-                                      trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️"),
-                                                 Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧"),
-                                                 Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸")]),
+    private var categories: [TrackerCategory] = []
+    /*private var categories = [TrackerCategory(header: "Важное",
+                                              trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: "Пн"),
+                                                         Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: "Вт"),
+                                                         Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: "Ср")]),
                       TrackerCategory(header: "Домашний уют",
-                                      trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺"),
-                                                 Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵")]),
+                                      trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: "Сб"),
+                                                 Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: "Вс")]),
                       TrackerCategory(header: "Радостные мелочи",
-                                      trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻")])]
-    
+                                      trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻", schedule: "Пн")])]
+    */
     private var completedTrackers: [TrackerRecord] = []
     //private var currentDate: Date
     
@@ -121,6 +121,34 @@ final class TrackersViewController: UIViewController {
             label.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
             label.topAnchor.constraint(equalTo: star.bottomAnchor, constant: 8)
         ])
+    }
+    
+    func addNewTracker(newTracker: Tracker) {
+        let num: Int
+        var newTrackers: [Tracker]
+        if categories.count == 0 {
+            num = categories.count
+            newTrackers = [newTracker]
+        } else {
+            num = categories[0].trackers.count
+            newTrackers = categories[0].trackers
+            newTrackers.append(newTracker)
+        }
+        
+
+        let newCategories: [TrackerCategory] = [TrackerCategory(header: "Важное",
+                                                                trackers: newTrackers)]
+        self.categories = newCategories
+        
+        print(self.categories)
+        print(categories.count)
+        print(categories[0].trackers.count)
+        
+        
+        
+        collectionView.performBatchUpdates {
+            collectionView.insertItems(at: [IndexPath(row: num, section: 0)])
+        }
     }
 }
 

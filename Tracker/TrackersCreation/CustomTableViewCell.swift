@@ -10,6 +10,7 @@ import UIKit
 
 final class CustomTableViewCell: UITableViewCell {
     static let identifier = "CustomTableViewCell"
+    let stackView = UIStackView()
     let header = UILabel()
     let text = UILabel()
     
@@ -20,25 +21,31 @@ final class CustomTableViewCell: UITableViewCell {
         backgroundView = view
         accessoryType = .disclosureIndicator
         
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.spacing = 2
+        stackView.distribution = .fillEqually
+        stackView.contentMode = .scaleToFill
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 56)
+        ])
+        
         header.textColor = .ypBlack
         header.font = .systemFont(ofSize: 17)
-        contentView.addSubview(header)
-        header.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            header.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            header.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15)
-        ])
-        
+        stackView.addArrangedSubview(header)
+    }
+    
+    func addSecondLabel(chosen: String) {
         text.textColor = .ypGray
         text.font = .systemFont(ofSize: 17)
-        contentView.addSubview(text)
-        text.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            text.leadingAnchor.constraint(equalTo: header.leadingAnchor),
-            text.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 2)
-        ])
+        text.text = chosen
+        stackView.addArrangedSubview(text)
     }
     
     required init?(coder: NSCoder) {
