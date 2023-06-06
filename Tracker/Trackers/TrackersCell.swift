@@ -41,6 +41,7 @@ final class TrackersCell: UICollectionViewCell {
         
         trackerName.font = .systemFont(ofSize: 12)
         trackerName.textColor = .white
+        trackerName.numberOfLines = 2
         colorView.addSubview(trackerName)
         trackerName.translatesAutoresizingMaskIntoConstraints = false
         

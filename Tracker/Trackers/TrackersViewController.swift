@@ -12,8 +12,7 @@ final class TrackersViewController: UIViewController {
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let placeholder = UIImageView()
     
-    private var categories: [TrackerCategory] = [TrackerCategory(header: "Важное",
-                                                                 trackers: [])]
+    private var categories: [TrackerCategory] = []
     /*private var categories = [
         TrackerCategory(header: "Важное",
                         trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: "Пн"),
@@ -23,7 +22,7 @@ final class TrackersViewController: UIViewController {
                         trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: "Сб"),
                                    Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: "Вс")]),
         TrackerCategory(header: "Радостные мелочи",
-                        trackers: [Tracker(id: 6, name: "Смешная кошка", color: .selection3, emogi: "😻", schedule: "Пн")])]*/
+                        trackers: [Tracker(id: 6, name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     //private var currentDate: Date
@@ -40,8 +39,7 @@ final class TrackersViewController: UIViewController {
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(
             TrackersHeaders.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        if categories[0].trackers.count == 0 {
-            collectionView.isHidden = true
+        if categories.count == 0 {
             showPlaceholder()
         }
     }
@@ -230,21 +228,22 @@ extension TrackersViewController: TrackersCellDelegate {
 //MARK: - TrackersStorageDelegate
 extension TrackersViewController: TrackersStorageDelegate {
     func dataUpdated() {
-        if collectionView.isHidden == true {
-            collectionView.isHidden = false
-            //self.view.deletePlaceholder
-        }
+      
+        //self.view.deletePlaceholder
+       
         
-        let num = categories[0].trackers.count
-        
-        let newCategories = [TrackerCategory(header: "Важное",
-                                             trackers: TrackersStorage.shared.trackers)]
+        let newCategories = TrackersStorage.shared.categories
         
         self.categories = newCategories
         
         collectionView.performBatchUpdates {
-            //collectionView.insertSections(IndexSet(integer: 0))
-            collectionView.insertItems(at: [IndexPath(row: num, section: 0)])
+            if collectionView.numberOfSections == 0 {
+                collectionView.insertSections(IndexSet(integer: 0))
+                collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+            } else {
+                let num = categories[0].trackers.count
+                collectionView.insertItems(at: [IndexPath(row: (num - 1), section: 0)])
+            }
         }
     }
 }

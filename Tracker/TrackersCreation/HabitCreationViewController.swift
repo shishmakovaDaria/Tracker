@@ -156,7 +156,7 @@ final class HabitCreationViewController: UIViewController {
             color: colors.randomElement() ?? UIColor(),
             emogi: emoji.randomElement() ?? "",
             schedule: schedule)
-        TrackersStorage.shared.addNewTracker(tracker: newTracker)
+        TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category)
         //delegate?.addTracker(tracker: newTracker)
     }
     
