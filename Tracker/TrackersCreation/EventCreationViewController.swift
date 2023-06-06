@@ -10,7 +10,16 @@ import UIKit
 
 final class EventCreationViewController: UIViewController {
     
-    private var tableView = UITableView()
+    private let tableView = UITableView()
+    private let trackersName = CustomTextField()
+    private let errorLabel = UILabel()
+    private let createButton = UIButton()
+    private var newTrackersName: String?
+    private var category: String?
+    private let emoji = ["⚽️", "💧", "🌺", "🥵", "😻"]
+    private let colors: [UIColor] = [.selection1, .selection2, .selection3, .selection4, .selection5, .selection6, .selection7, .selection8, .selection9, .selection10]
+    
+    private var tableViewTopConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +27,7 @@ final class EventCreationViewController: UIViewController {
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
     }
     
     private func configureView() {
@@ -34,12 +43,15 @@ final class EventCreationViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-        let trackersName = CustomTextField()
-        trackersName.text = "Введите название трекера"
-        trackersName.textColor = .ypGray
+        trackersName.placeholder = "Введите название трекера"
+        trackersName.textColor = .ypBlack
         trackersName.font = .systemFont(ofSize: 17)
         trackersName.backgroundColor = .backgroundDay
         trackersName.layer.cornerRadius = 16
+        trackersName.clearButtonMode = .whileEditing
+        trackersName.returnKeyType = .go
+        trackersName.delegate = self
+        trackersName.addTarget(self, action: #selector(textFieldDidChange(_:)), for: UIControl.Event.editingChanged)
         view.addSubview(trackersName)
         trackersName.translatesAutoresizingMaskIntoConstraints = false
         
@@ -49,6 +61,20 @@ final class EventCreationViewController: UIViewController {
             trackersName.heightAnchor.constraint(equalToConstant: 75),
             trackersName.topAnchor.constraint(equalTo: view.topAnchor, constant: 87)
         ])
+        
+        errorLabel.text = "Ограничение 38 символов"
+        errorLabel.font = .systemFont(ofSize: 17)
+        errorLabel.textColor = .ypRed
+        
+        view.addSubview(errorLabel)
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            errorLabel.topAnchor.constraint(equalTo: trackersName.bottomAnchor, constant: 8)
+        ])
+        
+        errorLabel.isHidden = true
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -76,8 +102,10 @@ final class EventCreationViewController: UIViewController {
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
-        let createButton = UIButton()
-        createButton.setImage(UIImage(named: "CreateButton"), for: .normal)
+        createButton.setImage(UIImage(named: "CreateButtonBlack"), for: .normal)
+        createButton.setImage(UIImage(named: "CreateButtonGray"), for: .disabled)
+        createButton.addTarget(self, action: #selector(createButtonDidTap(_:)), for: .touchUpInside)
+        createButton.isEnabled = false
         stackView.addArrangedSubview(createButton)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -92,16 +120,53 @@ final class EventCreationViewController: UIViewController {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        tableViewTopConstraint = NSLayoutConstraint(
+            item: tableView,
+            attribute: .top,
+            relatedBy: .equal,
+            toItem: trackersName,
+            attribute: .bottom,
+            multiplier: 1,
+            constant: 24)
+        
+        guard let tableViewTopConstraint = tableViewTopConstraint else { return }
+        
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: trackersName.bottomAnchor, constant: 24),
+            tableViewTopConstraint,
             tableView.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
     
     @IBAction private func cancelButtonDidTap(_ sender: Any?) {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction private func createButtonDidTap(_ sender: Any?) {
+        if newTrackersName?.isEmpty == false,
+           category?.isEmpty == false {
+            let newTracker = Tracker(
+                id: (TrackersStorage.shared.trackers.count + 1),
+                name: newTrackersName ?? "",
+                color: colors.randomElement() ?? UIColor(),
+                emogi: emoji.randomElement() ?? "",
+                schedule: nil)
+            TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category ?? "")
+            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func textFieldDidChange(_ textField: UITextField) {
+        guard trackersName.isValid() else {
+            errorLabel.isHidden = false
+            tableViewTopConstraint?.constant = 62
+            view.layoutIfNeeded()
+            return
+        }
+        tableViewTopConstraint?.constant = 24
+        errorLabel.isHidden = true
+        view.layoutIfNeeded()
     }
 }
 
@@ -112,11 +177,15 @@ extension EventCreationViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Категория"
-        cell.backgroundColor = .backgroundDay
-        cell.accessoryType = .disclosureIndicator
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
+        cell.header.text = "Категория"
         cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
+        
+        if category != nil {
+            cell.addSecondLabel(chosen: category ?? "")
+            tableView.reloadData()
+        }
         return cell
     }
 }
@@ -125,5 +194,39 @@ extension EventCreationViewController: UITableViewDataSource {
 extension EventCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let VC = CategoryViewController()
+        VC.delegate = self
+        VC.modalTransitionStyle = .flipHorizontal
+        present(VC, animated: true)
+    }
+}
+
+//MARK: - UITextFieldDelegate
+extension EventCreationViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        trackersName.resignFirstResponder()
+        
+        if let text = trackersName.text {
+            newTrackersName = text
+        }
+        
+        if category?.isEmpty == false {
+            createButton.isEnabled = true
+        }
+        return true
+    }
+}
+
+//MARK: - CategoryViewControllerDelegate
+extension EventCreationViewController: CategoryViewControllerDelegate {
+    func addCategory(chosenCategory: String) {
+        self.category = chosenCategory
+        
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CustomTableViewCell else { return }
+        cell.addSecondLabel(chosen: category ?? "")
+        
+        if newTrackersName?.isEmpty == false {
+            createButton.isEnabled = true
+        }
     }
 }

@@ -104,8 +104,10 @@ final class HabitCreationViewController: UIViewController {
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
         
-        createButton.setImage(UIImage(named: "CreateButton"), for: .normal)
+        createButton.setImage(UIImage(named: "CreateButtonBlack"), for: .normal)
+        createButton.setImage(UIImage(named: "CreateButtonGray"), for: .disabled)
         createButton.addTarget(self, action: #selector(createButtonDidTap(_:)), for: .touchUpInside)
+        createButton.isEnabled = false
         stackView.addArrangedSubview(createButton)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -146,7 +148,6 @@ final class HabitCreationViewController: UIViewController {
         if newTrackersName?.isEmpty == false,
            category?.isEmpty == false,
            schedule.isEmpty == false {
-            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
             let newTracker = Tracker(
                 id: (TrackersStorage.shared.trackers.count + 1),
                 name: newTrackersName ?? "",
@@ -154,19 +155,18 @@ final class HabitCreationViewController: UIViewController {
                 emogi: emoji.randomElement() ?? "",
                 schedule: schedule)
             TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category ?? "")
+            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
         }
     }
     
     @IBAction func textFieldDidChange(_ textField: UITextField) {
         guard trackersName.isValid() else {
-            createButton.isEnabled = false
             errorLabel.isHidden = false
             tableViewTopConstraint?.constant = 62
             view.layoutIfNeeded()
             return
         }
         tableViewTopConstraint?.constant = 24
-        createButton.isEnabled = true
         errorLabel.isHidden = true
         view.layoutIfNeeded()
     }
@@ -223,6 +223,11 @@ extension HabitCreationViewController: UITextFieldDelegate {
         if let text = trackersName.text {
             newTrackersName = text
         }
+        
+        if category?.isEmpty == false,
+           schedule.isEmpty == false {
+            createButton.isEnabled = true
+        }
         return true
     }
 }
@@ -234,6 +239,11 @@ extension HabitCreationViewController: CategoryViewControllerDelegate {
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CustomTableViewCell else { return }
         cell.addSecondLabel(chosen: category ?? "")
+        
+        if newTrackersName?.isEmpty == false,
+           schedule.isEmpty == false {
+            createButton.isEnabled = true
+        }
     }
 }
 
@@ -257,5 +267,10 @@ extension HabitCreationViewController: ScheduleViewControllerDelegate {
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CustomTableViewCell else { return }
         cell.addSecondLabel(chosen: scheduleString)
+        
+        if newTrackersName?.isEmpty == false,
+           category?.isEmpty == false {
+            createButton.isEnabled = true
+        }
     }
 }
