@@ -64,7 +64,6 @@ final class TrackersCreationViewController: UIViewController {
     
     @IBAction private func habitButtonDidTap(_ sender: Any?) {
         let VC = HabitCreationViewController()
-        VC.delegate = TrackersNavigationContoller()
         present(VC, animated: true)
     }
     

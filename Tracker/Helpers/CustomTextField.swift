@@ -22,12 +22,8 @@ class CustomTextField: UITextField {
     }
     
     func isValid() -> Bool {
-        guard let text = self.text,
-              !text.isEmpty
-        else { return false }
-        
-        guard text.count <= 38
-        else { return false }
+        guard let text = self.text else { return false }
+        guard text.count <= 38 else { return false }
         
         return true
     }

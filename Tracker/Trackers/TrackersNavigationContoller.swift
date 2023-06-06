@@ -39,10 +39,3 @@ final class TrackersNavigationContoller: UINavigationController {
         controller.showTrackersCreationViewController()
     }
 }
-
-//MARK: - HabitCreationViewControllerDelegate
-extension TrackersNavigationContoller: HabitCreationViewControllerDelegate {
-    func addTracker(tracker: Tracker) {
-        controller.addNewTracker(newTracker: tracker)
-    }
-}

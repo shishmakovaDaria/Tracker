@@ -8,13 +8,7 @@
 import Foundation
 import UIKit
 
-protocol HabitCreationViewControllerDelegate: AnyObject {
-    func addTracker(tracker: Tracker)
-}
-
 final class HabitCreationViewController: UIViewController {
-    
-    var delegate: HabitCreationViewControllerDelegate?
     
     private let tableView = UITableView()
     private let trackersName = CustomTextField()
@@ -22,10 +16,10 @@ final class HabitCreationViewController: UIViewController {
     private let createButton = UIButton()
     private var newTrackersName: String?
     private let tableHeaders = ["Категория", "Расписание"]
-    var schedule = ""
-    var category = ""
-    let emoji = ["⚽️", "💧", "🌺", "🥵", "😻"]
-    let colors: [UIColor] = [.selection1, .selection2, .selection3, .selection4, .selection5, .selection6, .selection7, .selection8, .selection9, .selection10]
+    private var schedule = Set<WeekDay>()
+    private var category: String?
+    private let emoji = ["⚽️", "💧", "🌺", "🥵", "😻"]
+    private let colors: [UIColor] = [.selection1, .selection2, .selection3, .selection4, .selection5, .selection6, .selection7, .selection8, .selection9, .selection10]
     
     private var tableViewTopConstraint: NSLayoutConstraint?
     
@@ -149,15 +143,18 @@ final class HabitCreationViewController: UIViewController {
     }
     
     @IBAction private func createButtonDidTap(_ sender: Any?) {
-        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-        let newTracker = Tracker(
-            id: (TrackersStorage.shared.trackers.count + 1),
-            name: newTrackersName ?? "",
-            color: colors.randomElement() ?? UIColor(),
-            emogi: emoji.randomElement() ?? "",
-            schedule: schedule)
-        TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category)
-        //delegate?.addTracker(tracker: newTracker)
+        if newTrackersName?.isEmpty == false,
+           category?.isEmpty == false,
+           schedule.isEmpty == false {
+            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+            let newTracker = Tracker(
+                id: (TrackersStorage.shared.trackers.count + 1),
+                name: newTrackersName ?? "",
+                color: colors.randomElement() ?? UIColor(),
+                emogi: emoji.randomElement() ?? "",
+                schedule: schedule)
+            TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category ?? "")
+        }
     }
     
     @IBAction func textFieldDidChange(_ textField: UITextField) {
@@ -192,8 +189,8 @@ extension HabitCreationViewController: UITableViewDataSource {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
         
-        if category != "" {
-            cell.addSecondLabel(chosen: category)
+        if category != nil {
+            cell.addSecondLabel(chosen: category ?? "")
             tableView.reloadData()
         }
         return cell
@@ -236,16 +233,29 @@ extension HabitCreationViewController: CategoryViewControllerDelegate {
         self.category = chosenCategory
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CustomTableViewCell else { return }
-        cell.addSecondLabel(chosen: category)
+        cell.addSecondLabel(chosen: category ?? "")
     }
 }
 
 //MARK: - ScheduleViewControllerDelegate
 extension HabitCreationViewController: ScheduleViewControllerDelegate {
-    func addSchedule(chosenSchedule: [String]) {
-        self.schedule = chosenSchedule.joined(separator: ", ")
+    func addSchedule(chosenSchedule: Set<WeekDay>) {
+        self.schedule = chosenSchedule
+        
+        var scheduleArray = [WeekDay]()
+        for day in chosenSchedule {
+            scheduleArray.append(day)
+        }
+        scheduleArray.sort{$0<$1}
+        
+        var scheduleRawArray = [String]()
+        for day in scheduleArray {
+            scheduleRawArray.append(day.rawValue)
+        }
+        
+        let scheduleString = scheduleRawArray.joined(separator: ", ")
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CustomTableViewCell else { return }
-        cell.addSecondLabel(chosen: schedule)
+        cell.addSecondLabel(chosen: scheduleString)
     }
 }

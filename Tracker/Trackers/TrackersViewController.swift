@@ -11,18 +11,20 @@ final class TrackersViewController: UIViewController {
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let placeholder = UIImageView()
-    
+    private let placeholderLabel = UILabel()
     private var categories: [TrackerCategory] = []
+    //mock:
     /*private var categories = [
         TrackerCategory(header: "Важное",
-                        trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: "Пн"),
-                                   Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: "Вт"),
-                                   Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: "Ср")]),
+                        trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: [.monday, .tuesday, .friday]),
+                                   Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: [.monday, .sunday]),
+                                   Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: [.saturday, .tuesday])]),
         TrackerCategory(header: "Домашний уют",
-                        trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: "Сб"),
-                                   Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: "Вс")]),
+                        trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: [.wednesday]),
+                                   Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: [.sunday])]),
         TrackerCategory(header: "Радостные мелочи",
                         trackers: [Tracker(id: 6, name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
+    
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     //private var currentDate: Date
@@ -111,46 +113,20 @@ final class TrackersViewController: UIViewController {
             placeholder.widthAnchor.constraint(equalToConstant: 80)
         ])
         
-        let label = UILabel()
-        label.text = "Что будем отслеживать?"
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        placeholderLabel.text = "Что будем отслеживать?"
+        placeholderLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        view.addSubview(placeholderLabel)
+        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.topAnchor.constraint(equalTo: placeholder.bottomAnchor, constant: 8)
+            placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderLabel.topAnchor.constraint(equalTo: placeholder.bottomAnchor, constant: 8)
         ])
     }
     
-    
-    //можно удалить?
-    func addNewTracker(newTracker: Tracker) {
-        let num: Int
-        var newTrackers: [Tracker]
-        if categories.count == 0 {
-            num = categories.count
-            newTrackers = [newTracker]
-        } else {
-            num = categories[0].trackers.count
-            newTrackers = categories[0].trackers
-            newTrackers.append(newTracker)
-        }
-        
-
-        let newCategories: [TrackerCategory] = [TrackerCategory(header: "Важное",
-                                                                trackers: newTrackers)]
-        self.categories = newCategories
-        
-        print(self.categories)
-        print(categories.count)
-        print(categories[0].trackers.count)
-        
-        
-        
-        collectionView.performBatchUpdates {
-            collectionView.insertItems(at: [IndexPath(row: num, section: 0)])
-        }
+    private func hidePlaceholder() {
+        placeholder.removeFromSuperview()
+        placeholderLabel.removeFromSuperview()
     }
 }
 
@@ -229,8 +205,7 @@ extension TrackersViewController: TrackersCellDelegate {
 extension TrackersViewController: TrackersStorageDelegate {
     func dataUpdated() {
       
-        //self.view.deletePlaceholder
-       
+        hidePlaceholder()
         
         let newCategories = TrackersStorage.shared.categories
         

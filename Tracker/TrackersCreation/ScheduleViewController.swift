@@ -9,14 +9,14 @@ import Foundation
 import UIKit
 
 protocol ScheduleViewControllerDelegate: AnyObject {
-    func addSchedule(chosenSchedule: [String])
+    func addSchedule(chosenSchedule: Set<WeekDay>)
 }
 
 final class ScheduleViewController: UIViewController {
     
     private let tableView = UITableView()
     private let days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    var schedule: [String] = []
+    private var schedule = Set<WeekDay>()
     var delegate: ScheduleViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -80,33 +80,60 @@ final class ScheduleViewController: UIViewController {
     }
     
     @IBAction private func switchChanged(_ sender: UISwitch) {
-        if sender.tag == 0,
-           sender.isOn {
-            schedule.append("Пн")
+        if sender.tag == 0 {
+            if sender.isOn {
+                schedule.insert(.monday)
+            } else {
+                schedule.remove(.monday)
+            }
         }
-        if sender.tag == 1,
-           sender.isOn {
-            schedule.append("Вт")
+        
+        if sender.tag == 1 {
+            if sender.isOn {
+                schedule.insert(.tuesday)
+            } else {
+                schedule.remove(.tuesday)
+            }
         }
-        if sender.tag == 2,
-           sender.isOn {
-            schedule.append("Ср")
+        
+        if sender.tag == 2 {
+            if sender.isOn {
+                schedule.insert(.wednesday)
+            } else {
+                schedule.remove(.wednesday)
+            }
         }
-        if sender.tag == 3,
-           sender.isOn {
-            schedule.append("Чт")
+        
+        if sender.tag == 3 {
+            if sender.isOn {
+                schedule.insert(.thursday)
+            } else {
+                schedule.remove(.thursday)
+            }
         }
-        if sender.tag == 4,
-           sender.isOn {
-            schedule.append("Пт")
+        
+        if sender.tag == 4 {
+            if sender.isOn {
+                schedule.insert(.friday)
+            } else {
+                schedule.remove(.friday)
+            }
         }
-        if sender.tag == 5,
-           sender.isOn {
-            schedule.append("Сб")
+        
+        if sender.tag == 5 {
+            if sender.isOn {
+                schedule.insert(.saturday)
+            } else {
+                schedule.remove(.saturday)
+            }
         }
-        if sender.tag == 6,
-           sender.isOn {
-            schedule.append("Вс")
+        
+        if sender.tag == 6 {
+            if sender.isOn {
+                schedule.insert(.sunday)
+            } else {
+                schedule.remove(.sunday)
+            }
         }
     }
 }
@@ -143,7 +170,6 @@ extension ScheduleViewController: UITableViewDelegate {
     }
 }
 
-//не поняла как тут его применить :(
 enum WeekDay: String {
     case monday = "Пн"
     case tuesday = "Вт"
@@ -152,4 +178,27 @@ enum WeekDay: String {
     case friday = "Пт"
     case saturday = "Сб"
     case sunday = "Вс"
+    
+    private var sortOrder: Int {
+        switch self {
+        case .monday:
+            return 0
+        case .tuesday:
+            return 1
+        case .wednesday:
+            return 2
+        case .thursday:
+            return 3
+        case .friday:
+            return 4
+        case .saturday:
+            return 5
+        case .sunday:
+            return 6
+        }
+    }
+    
+    static func <(lhs: WeekDay, rhs: WeekDay) -> Bool {
+        lhs.sortOrder < rhs.sortOrder
+    }
 }
