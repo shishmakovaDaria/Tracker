@@ -139,11 +139,11 @@ final class EventCreationViewController: UIViewController {
         ])
     }
     
-    @IBAction private func cancelButtonDidTap(_ sender: Any?) {
+    @objc private func cancelButtonDidTap(_ sender: Any?) {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction private func createButtonDidTap(_ sender: Any?) {
+    @objc private func createButtonDidTap(_ sender: Any?) {
         if newTrackersName?.isEmpty == false,
            category?.isEmpty == false {
             let newTracker = Tracker(
@@ -157,7 +157,7 @@ final class EventCreationViewController: UIViewController {
         }
     }
     
-    @IBAction func textFieldDidChange(_ textField: UITextField) {
+    @objc func textFieldDidChange(_ textField: UITextField) {
         guard trackersName.isValid() else {
             errorLabel.isHidden = false
             tableViewTopConstraint?.constant = 62

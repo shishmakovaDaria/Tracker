@@ -74,12 +74,12 @@ final class ScheduleViewController: UIViewController {
         ])
     }
     
-    @IBAction private func doneButtonDidTap(_ sender: Any?) {
+    @objc private func doneButtonDidTap(_ sender: Any?) {
         delegate?.addSchedule(chosenSchedule: schedule)
         dismiss(animated: true)
     }
     
-    @IBAction private func switchChanged(_ sender: UISwitch) {
+    @objc private func switchChanged(_ sender: UISwitch) {
         if sender.tag == 0 {
             if sender.isOn {
                 schedule.insert(.monday)

@@ -103,7 +103,7 @@ final class CategoryViewController: UIViewController {
         ])
     }
     
-    @IBAction private func addButtonDidTap(_ sender: Any?) {
+    @objc private func addButtonDidTap(_ sender: Any?) {
         //to be done
         //present(NewCategoryViewController(), animated: true)
     }

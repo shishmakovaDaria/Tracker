@@ -35,7 +35,7 @@ final class TrackersNavigationContoller: UINavigationController {
         ])
     }
     
-    @IBAction private func plusButtonDidTap(_ sender: Any?) {
+    @objc private func plusButtonDidTap(_ sender: Any?) {
         controller.showTrackersCreationViewController()
     }
 }

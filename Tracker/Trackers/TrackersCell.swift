@@ -124,7 +124,7 @@ final class TrackersCell: UICollectionViewCell {
         }
     }
     
-    @IBAction private func trackerButtonClicked(_ sender: Any?) {
+    @objc private func trackerButtonClicked(_ sender: Any?) {
         delegate?.trackersButtonDidTap(self)
     }
     

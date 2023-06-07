@@ -62,7 +62,7 @@ final class NewCategoryViewController: UIViewController {
         ])
     }
     
-    @IBAction private func doneButtonDidTap(_ sender: Any?) {
+    @objc private func doneButtonDidTap(_ sender: Any?) {
         //to be done
     }
 }
