@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 struct Tracker {
-    let id: Int
+    let id: UUID
     let name: String
     let color: UIColor
     let emogi: String
@@ -22,6 +22,6 @@ struct TrackerCategory {
 }
 
 struct TrackerRecord {
-    let id: UInt
+    let id: UUID
     let date: Date
 }

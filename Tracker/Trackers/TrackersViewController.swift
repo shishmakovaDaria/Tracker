@@ -18,14 +18,14 @@ final class TrackersViewController: UIViewController {
     //mock:
     /*private var categories = [
         TrackerCategory(header: "Важное",
-                        trackers: [Tracker(id: 1, name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: [.monday, .tuesday, .friday]),
-                                   Tracker(id: 2, name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: [.monday, .sunday]),
-                                   Tracker(id: 3, name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: [.saturday, .tuesday])]),
+                        trackers: [Tracker(id: UUID(), name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: [.monday, .tuesday, .friday]),
+                                   Tracker(id: UUID(), name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: [.monday, .sunday]),
+                                   Tracker(id: UUID(), name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: [.saturday, .tuesday])]),
         TrackerCategory(header: "Домашний уют",
-                        trackers: [Tracker(id: 4, name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: [.wednesday]),
-                                   Tracker(id: 5, name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: [.sunday])]),
+                        trackers: [Tracker(id: UUID(), name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: [.wednesday]),
+                                   Tracker(id: UUID(), name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: [.sunday])]),
         TrackerCategory(header: "Радостные мелочи",
-                        trackers: [Tracker(id: 6, name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
+                        trackers: [Tracker(id: UUID(), name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
     
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -174,6 +174,13 @@ final class TrackersViewController: UIViewController {
         reloadPlaceholder()
     }
     
+    private func isTrackerCompletedToday(id: UUID) -> Bool {
+        completedTrackers.contains { trackerRecord in
+            let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+            return trackerRecord.id == id && isSameDay
+        }
+    }
+    
     @objc private func dateChanged() {
         reloadvisibleCategories()
     }
@@ -197,12 +204,28 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "cell", for: indexPath) as? TrackersCell else { return UICollectionViewCell()}
         
+        let currentTracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+        
         cell.delegate = self
-            cell.colorView.backgroundColor = visibleCategories[indexPath.section].trackers[indexPath.row].color
-            cell.colorRound.backgroundColor = visibleCategories[indexPath.section].trackers[indexPath.row].color
-            cell.emoji.text = visibleCategories[indexPath.section].trackers[indexPath.row].emogi
-            cell.trackerName.text = visibleCategories[indexPath.section].trackers[indexPath.row].name
-            cell.day.text = "0 дней"
+        cell.colorView.backgroundColor = currentTracker.color
+        cell.emoji.text = currentTracker.emogi
+        cell.trackerName.text = currentTracker.name
+        cell.trackerId = currentTracker.id
+        cell.indexPath = indexPath
+        cell.isCompletedToday = isTrackerCompletedToday(id: currentTracker.id)
+        
+        if cell.isCompletedToday {
+            cell.button.setImage(UIImage(named: "Done"), for: .normal)
+            cell.colorRound.backgroundColor = currentTracker.color.withAlphaComponent(0.3)
+        } else {
+            cell.button.setImage(UIImage(systemName: "plus"), for: .normal)
+            cell.colorRound.backgroundColor = currentTracker.color
+        }
+        
+        cell.completedDays = completedTrackers.filter { $0.id == currentTracker.id}.count
+        let dayText = String.getDayAddition(int: cell.completedDays ?? 0)
+        
+        cell.day.text = "\(cell.completedDays ?? 0) \(dayText)"
         return cell
     }
     
@@ -247,10 +270,20 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - TrackersCellDelegate
 extension TrackersViewController: TrackersCellDelegate {
-    func trackersButtonDidTap(_ cell: TrackersCell) {
-        //guard let indexPath = collectionView.indexPath(for: cell) else { return }
+    func markTrackerAsDone(id: UUID, at indexPath: IndexPath) {
+        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        completedTrackers.append(trackerRecord)
         
-        cell.markTrackerAsDone(isDone: true)
+        collectionView.reloadItems(at: [indexPath])
+    }
+    
+    func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath) {
+        completedTrackers.removeAll { trackerRecord in
+            let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+            return trackerRecord.id == id && isSameDay
+        }
+       
+        collectionView.reloadItems(at: [indexPath])
     }
 }
 

@@ -147,7 +147,7 @@ final class EventCreationViewController: UIViewController {
         if newTrackersName?.isEmpty == false,
            category?.isEmpty == false {
             let newTracker = Tracker(
-                id: (TrackersStorage.shared.trackers.count + 1),
+                id: UUID(),
                 name: newTrackersName ?? "",
                 color: colors.randomElement() ?? UIColor(),
                 emogi: emoji.randomElement() ?? "",

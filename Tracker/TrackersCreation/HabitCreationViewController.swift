@@ -149,7 +149,7 @@ final class HabitCreationViewController: UIViewController {
            category?.isEmpty == false,
            schedule.isEmpty == false {
             let newTracker = Tracker(
-                id: (TrackersStorage.shared.trackers.count + 1),
+                id: UUID(),
                 name: newTrackersName ?? "",
                 color: colors.randomElement() ?? UIColor(),
                 emogi: emoji.randomElement() ?? "",

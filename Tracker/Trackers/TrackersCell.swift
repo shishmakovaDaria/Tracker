@@ -9,12 +9,17 @@ import Foundation
 import UIKit
 
 protocol TrackersCellDelegate: AnyObject {
-    func trackersButtonDidTap(_ cell: TrackersCell)
+    func markTrackerAsDone(id: UUID, at indexPath: IndexPath)
+    func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath)
 }
 
 final class TrackersCell: UICollectionViewCell {
     
     weak var delegate: TrackersCellDelegate?
+    var isCompletedToday: Bool = false
+    var trackerId: UUID?
+    var indexPath: IndexPath?
+    var completedDays: Int?
     
     let colorView = UIView()
     let trackerName = UILabel()
@@ -98,34 +103,26 @@ final class TrackersCell: UICollectionViewCell {
             colorRound.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
         
-        let button = UIButton.systemButton(with: UIImage(named: "Plus")!,
-                                           target: self,
-                                           action: nil)
         button.addTarget(self, action: #selector(trackerButtonClicked(_:)), for: .touchUpInside)
         button.tintColor = .white
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 10.21),
-            button.widthAnchor.constraint(equalToConstant: 10.63),
+            button.heightAnchor.constraint(equalToConstant: 13),
+            button.widthAnchor.constraint(equalToConstant: 13),
             button.centerXAnchor.constraint(equalTo: colorRound.centerXAnchor),
             button.centerYAnchor.constraint(equalTo: colorRound.centerYAnchor)
         ])
     }
     
-    func markTrackerAsDone(isDone: Bool) {
-        if isDone {
-            button.imageView?.image = UIImage(named: "Done")
-            //colorRound.backgroundColor?.withAlphaComponent(0.3)
-        } else {
-            button.imageView?.image = UIImage(named: "Plus")
-            //colorRound.backgroundColor?.withAlphaComponent(1)
-        }
-    }
-    
     @objc private func trackerButtonClicked(_ sender: Any?) {
-        delegate?.trackersButtonDidTap(self)
+        guard let trackerId = trackerId, let indexPath = indexPath else { return }
+        if isCompletedToday {
+            delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)
+        } else {
+            delegate?.markTrackerAsDone(id: trackerId, at: indexPath)
+        }
     }
     
     required init?(coder: NSCoder) {
