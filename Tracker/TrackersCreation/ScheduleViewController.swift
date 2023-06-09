@@ -169,36 +169,3 @@ extension ScheduleViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
-
-enum WeekDay: String {
-    case monday = "Пн"
-    case tuesday = "Вт"
-    case wednesday = "Ср"
-    case thursday = "Чт"
-    case friday = "Пт"
-    case saturday = "Сб"
-    case sunday = "Вс"
-    
-    private var sortOrder: Int {
-        switch self {
-        case .monday:
-            return 0
-        case .tuesday:
-            return 1
-        case .wednesday:
-            return 2
-        case .thursday:
-            return 3
-        case .friday:
-            return 4
-        case .saturday:
-            return 5
-        case .sunday:
-            return 6
-        }
-    }
-    
-    static func <(lhs: WeekDay, rhs: WeekDay) -> Bool {
-        lhs.sortOrder < rhs.sortOrder
-    }
-}

@@ -138,15 +138,7 @@ final class TrackersViewController: UIViewController {
     private func reloadvisibleCategories() {
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        var filterWeekdayEnumCase = WeekDay.monday
-        if filterWeekday == 1 { filterWeekdayEnumCase = .sunday }
-        if filterWeekday == 2 { filterWeekdayEnumCase = .monday }
-        if filterWeekday == 3 { filterWeekdayEnumCase = .tuesday }
-        if filterWeekday == 4 { filterWeekdayEnumCase = .wednesday }
-        if filterWeekday == 5 { filterWeekdayEnumCase = .thursday }
-        if filterWeekday == 6 { filterWeekdayEnumCase = .friday }
-        if filterWeekday == 7 { filterWeekdayEnumCase = .saturday }
-        
+        let filterWeekdayEnumCase = WeekDay.monday.makeInt(filterWeekday: filterWeekday)
         let filterText = (searchTextField.text ?? "").lowercased()
         
         visibleCategories = categories.compactMap { category in
@@ -307,6 +299,8 @@ extension TrackersViewController: TrackersStorageDelegate {
                 collectionView.insertItems(at: [IndexPath(row: (num - 1), section: 0)])
             }
         }
+        
+        reloadvisibleCategories()
     }
 }
 
