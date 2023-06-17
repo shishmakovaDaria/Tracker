@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol EventCreationViewControllerDelegate: AnyObject {
+    func addNewEvent(tracker: Tracker, header: String)
+}
+
 final class EventCreationViewController: UIViewController {
     
     private let emojiCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -29,6 +33,7 @@ final class EventCreationViewController: UIViewController {
                                      .selection13, .selection14, .selection15, .selection16, .selection17, .selection18]
     
     private var tableViewTopConstraint: NSLayoutConstraint?
+    var delegate: EventCreationViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -234,7 +239,7 @@ final class EventCreationViewController: UIViewController {
             color: color ?? UIColor(),
             emogi: emoji ?? "",
             schedule: nil)
-        TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category ?? "")
+        delegate?.addNewEvent(tracker: newTracker, header: category ?? "")
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     

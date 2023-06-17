@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol HabitCreationViewControllerDelegate: AnyObject {
+    func addNewHabit(tracker: Tracker, header: String)
+}
+
 final class HabitCreationViewController: UIViewController {
     
     private let emojiCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -31,6 +35,7 @@ final class HabitCreationViewController: UIViewController {
                                      .selection13, .selection14, .selection15, .selection16, .selection17, .selection18]
     
     private var tableViewTopConstraint: NSLayoutConstraint?
+    var delegate: HabitCreationViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -236,7 +241,7 @@ final class HabitCreationViewController: UIViewController {
             color: color ?? UIColor(),
             emogi: emoji ?? "",
             schedule: schedule)
-        TrackersStorage.shared.addNewTracker(tracker: newTracker, header: self.category ?? "")
+        delegate?.addNewHabit(tracker: newTracker, header: category ?? "")
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     

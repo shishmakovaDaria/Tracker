@@ -10,6 +10,8 @@ import UIKit
 
 final class TrackersCreationViewController: UIViewController {
     
+    var controller: TrackersViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -63,10 +65,14 @@ final class TrackersCreationViewController: UIViewController {
     }
     
     @objc private func habitButtonDidTap(_ sender: Any?) {
-        present(HabitCreationViewController(), animated: true)
+        let VC = HabitCreationViewController()
+        VC.delegate = self.controller
+        present(VC, animated: true)
     }
     
     @objc private func eventButtonDidTap(_ sender: Any?) {
-        present(EventCreationViewController(), animated: true)
+        let VC = EventCreationViewController()
+        VC.delegate = self.controller
+        present(VC, animated: true)
     }
 }

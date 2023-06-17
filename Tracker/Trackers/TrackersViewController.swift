@@ -30,6 +30,7 @@ final class TrackersViewController: UIViewController {
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     //private var currentDate: Date
+    private let trackerStore = TrackerStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +39,7 @@ final class TrackersViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         addCollectionView()
         addViews()
+        trackerStore.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "cell")
@@ -45,12 +47,15 @@ final class TrackersViewController: UIViewController {
             TrackersHeaders.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "header")
-        dateChanged()
+        categories = [TrackerCategory(header: "Важное", trackers: trackerStore.trackers)]
+        reloadvisibleCategories()
         reloadPlaceholder()
     }
     
     func showTrackersCreationViewController() {
-        present(TrackersCreationViewController(), animated: true)
+        let VC = TrackersCreationViewController()
+        VC.controller = self
+        present(VC, animated: true)
     }
     
     private func addCollectionView() {
@@ -138,7 +143,7 @@ final class TrackersViewController: UIViewController {
     private func reloadvisibleCategories() {
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        let filterWeekdayEnumCase = WeekDay.monday.makeInt(filterWeekday: filterWeekday)
+        let filterWeekdayEnumCase = WeekDay.monday.makeWeekDay(filterWeekday: filterWeekday)
         let filterText = (searchTextField.text ?? "").lowercased()
         
         visibleCategories = categories.compactMap { category in
@@ -279,13 +284,24 @@ extension TrackersViewController: TrackersCellDelegate {
     }
 }
 
-//MARK: - TrackersStorageDelegate
-extension TrackersViewController: TrackersStorageDelegate {
-    func dataUpdated() {
-        
-        let newCategories = TrackersStorage.shared.categories
-        
-        categories = newCategories
+//MARK: - HabitCreationViewControllerDelegate
+extension TrackersViewController: HabitCreationViewControllerDelegate {
+    func addNewHabit(tracker: Tracker, header: String) {
+        try! trackerStore.addNewTracker(tracker)
+    }
+}
+
+//MARK: - HabitCreationViewControllerDelegate
+extension TrackersViewController: EventCreationViewControllerDelegate {
+    func addNewEvent(tracker: Tracker, header: String) {
+        try! trackerStore.addNewTracker(tracker)
+    }
+}
+
+//MARK: - TrackerStoreDelegate
+extension TrackersViewController: TrackerStoreDelegate {
+    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+        categories = [TrackerCategory(header: "Важное", trackers: trackerStore.trackers)]
         visibleCategories = categories
         
         reloadPlaceholder()
@@ -295,14 +311,25 @@ extension TrackersViewController: TrackersStorageDelegate {
                 collectionView.insertSections(IndexSet(integer: 0))
                 collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
             } else {
-                let num = visibleCategories[0].trackers.count
-                collectionView.insertItems(at: [IndexPath(row: (num - 1), section: 0)])
+                let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
+                let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
+                let updatedIndexPaths = update.updatedIndexes.map { IndexPath(item: $0, section: 0) }
+                collectionView.insertItems(at: insertedIndexPaths)
+                collectionView.insertItems(at: deletedIndexPaths)
+                collectionView.insertItems(at: updatedIndexPaths)
+                for move in update.movedIndexes {
+                    collectionView.moveItem(
+                        at: IndexPath(item: move.oldIndex, section: 0),
+                        to: IndexPath(item: move.newIndex, section: 0)
+                    )
+                }
             }
         }
         
         reloadvisibleCategories()
     }
 }
+
 
 //MARK: - UITextFieldDelegate
 extension TrackersViewController: UITextFieldDelegate {
