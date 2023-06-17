@@ -150,7 +150,7 @@ final class TrackersViewController: UIViewController {
             let trackers = category.trackers.filter { tracker in
                 let textCondition = filterText.isEmpty ||
                                     tracker.name.lowercased().contains(filterText)
-                let dateCondition = tracker.schedule?.contains { weekDay in
+                let dateCondition = tracker.schedule.contains { weekDay in
                     weekDay == filterWeekdayEnumCase
                 } == true
                 

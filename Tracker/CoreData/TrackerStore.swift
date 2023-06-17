@@ -107,7 +107,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.name = newTracker.name
         trackerCoreData.emoji = newTracker.emogi
         trackerCoreData.colorHex = uiColorMarshalling.hexString(from: newTracker.color)
-        trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: newTracker.schedule ?? Set<WeekDay>())
+        trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: newTracker.schedule)
         try context.save()
     }
     
