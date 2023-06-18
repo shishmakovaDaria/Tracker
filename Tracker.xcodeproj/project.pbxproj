@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6109B7432A0D683C00C46EF0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109B7422A0D683C00C46EF0 /* TabBarController.swift */; };
 		6109B7452A0D6A2C00C46EF0 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109B7442A0D6A2C00C46EF0 /* StatisticsViewController.swift */; };
+		610A75BE2A3F6A1F004AF86A /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610A75BD2A3F6A1F004AF86A /* TrackerRecordStore.swift */; };
 		6134659E2A3DABD5008A31F9 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6134659D2A3DABD5008A31F9 /* TrackerStore.swift */; };
 		613465A12A3DAD5B008A31F9 /* Store.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6134659F2A3DAD5B008A31F9 /* Store.xcdatamodeld */; };
 		613465A32A3DB169008A31F9 /* UIColorMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613465A22A3DB169008A31F9 /* UIColorMarshalling.swift */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		6109B7422A0D683C00C46EF0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		6109B7442A0D6A2C00C46EF0 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
+		610A75BD2A3F6A1F004AF86A /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		6134659D2A3DABD5008A31F9 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		613465A02A3DAD5B008A31F9 /* Store.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Store.xcdatamodel; sourceTree = "<group>"; };
 		613465A22A3DB169008A31F9 /* UIColorMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorMarshalling.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			children = (
 				6134659D2A3DABD5008A31F9 /* TrackerStore.swift */,
 				613465A62A3E3CA3008A31F9 /* TrackerCategoryStore.swift */,
+				610A75BD2A3F6A1F004AF86A /* TrackerRecordStore.swift */,
 				613465A22A3DB169008A31F9 /* UIColorMarshalling.swift */,
 				613465A42A3DC319008A31F9 /* WeekDayMarshalling.swift */,
 				6134659F2A3DAD5B008A31F9 /* Store.xcdatamodeld */,
@@ -285,6 +288,7 @@
 				6109B7432A0D683C00C46EF0 /* TabBarController.swift in Sources */,
 				613465A32A3DB169008A31F9 /* UIColorMarshalling.swift in Sources */,
 				61D1E21C2A2A757D00A9F89E /* CategoryViewController.swift in Sources */,
+				610A75BE2A3F6A1F004AF86A /* TrackerRecordStore.swift in Sources */,
 				61F2D5832A0C32C4005C5386 /* UIColor.swift in Sources */,
 				61DC94EB2A1D50FE0012B292 /* TrackersNavigationContoller.swift in Sources */,
 				61B76AEC2A292A2F00A98644 /* TrackersCreationViewController.swift in Sources */,

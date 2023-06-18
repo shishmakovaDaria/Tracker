@@ -110,7 +110,9 @@ final class TrackerStore: NSObject {
         trackerCoreData.emoji = newTracker.emogi
         trackerCoreData.colorHex = uiColorMarshalling.hexString(from: newTracker.color)
         trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: newTracker.schedule)
-        //trackerCoreData.category =
+        let categoriesFetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        let categories = try context.fetch(categoriesFetchRequest)
+        trackerCoreData.category = categories.first
         try context.save()
     }
     

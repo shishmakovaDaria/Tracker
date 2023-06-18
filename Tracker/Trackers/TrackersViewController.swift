@@ -31,6 +31,7 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +42,7 @@ final class TrackersViewController: UIViewController {
         addViews()
         trackerStore.delegate = self
         trackerCategoryStore.delegate = self
+        trackerRecordStore.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "cell")
@@ -51,7 +53,8 @@ final class TrackersViewController: UIViewController {
         if trackerCategoryStore.categories != [] {
             categories = [TrackerCategory(header: trackerCategoryStore.categories[0], trackers: trackerStore.trackers)]
         }
-        reloadvisibleCategories()
+        completedTrackers = trackerRecordStore.trackersRecords
+        reloadVisibleCategories()
         reloadPlaceholder()
     }
     
@@ -143,7 +146,7 @@ final class TrackersViewController: UIViewController {
         placeholderLabel.isHidden = !visibleCategories.isEmpty
     }
     
-    private func reloadvisibleCategories() {
+    private func reloadVisibleCategories() {
         let calendar = Calendar.current
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
         let filterWeekdayEnumCase = WeekDay.monday.makeWeekDay(filterWeekday: filterWeekday)
@@ -182,11 +185,11 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func dateChanged() {
-        reloadvisibleCategories()
+        reloadVisibleCategories()
     }
     
     @objc private func searchTextFieldChanged() {
-        reloadvisibleCategories()
+        reloadVisibleCategories()
     }
 }
 
@@ -272,18 +275,12 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: TrackersCellDelegate {
     func markTrackerAsDone(id: UUID, at indexPath: IndexPath) {
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.append(trackerRecord)
-        
-        collectionView.reloadItems(at: [indexPath])
+        try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
     }
     
     func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath) {
-        completedTrackers.removeAll { trackerRecord in
-            let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-            return trackerRecord.id == id && isSameDay
-        }
-       
-        collectionView.reloadItems(at: [indexPath])
+        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        try! trackerRecordStore.removeRecord(trackerRecord)
     }
 }
 
@@ -292,27 +289,24 @@ extension TrackersViewController: HabitCreationViewControllerDelegate {
     func addNewHabit(tracker: Tracker, header: String) {
         try! trackerCategoryStore.addNewCategory(header)
         try! trackerStore.addNewTracker(tracker)
-        
     }
 }
 
 //MARK: - EventCreationViewControllerDelegate
 extension TrackersViewController: EventCreationViewControllerDelegate {
     func addNewEvent(tracker: Tracker, header: String) {
-        try! trackerStore.addNewTracker(tracker)
         try! trackerCategoryStore.addNewCategory(header)
+        try! trackerStore.addNewTracker(tracker)
     }
 }
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
-        if trackerCategoryStore.categories != [] {
-            categories = [TrackerCategory(header: trackerCategoryStore.categories[0], trackers: trackerStore.trackers)]
-        }
-        visibleCategories = categories
+     
+        categories = [TrackerCategory(header: trackerCategoryStore.categories.first ?? "Важное", trackers: trackerStore.trackers)]
         
-        reloadPlaceholder()
+        visibleCategories = categories
         
         collectionView.performBatchUpdates {
             if collectionView.numberOfSections == 0 {
@@ -334,22 +328,32 @@ extension TrackersViewController: TrackerStoreDelegate {
             }
         }
         
-        reloadvisibleCategories()
+        reloadVisibleCategories()
+        reloadPlaceholder()
     }
 }
 
-//MARK: - TrackerStoreDelegate
+//MARK: - TrackerCategoryStoreDelegate
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func storeCategory(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
         // to be done
     }
 }
 
+//MARK: - TrackerStoreDelegate
+extension TrackersViewController : TrackerRecordStoreDelegate {
+    func store(_ store: TrackerRecordStore) {
+        completedTrackers = trackerRecordStore.trackersRecords
+        collectionView.reloadData()
+    }
+}
+
+
 //MARK: - UITextFieldDelegate
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        reloadvisibleCategories()
+        reloadVisibleCategories()
         
         return true
     }
