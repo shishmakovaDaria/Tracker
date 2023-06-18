@@ -29,8 +29,8 @@ final class TrackersViewController: UIViewController {
     
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
-    //private var currentDate: Date
     private let trackerStore = TrackerStore()
+    private let trackerCategoryStore = TrackerCategoryStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +40,7 @@ final class TrackersViewController: UIViewController {
         addCollectionView()
         addViews()
         trackerStore.delegate = self
+        trackerCategoryStore.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "cell")
@@ -47,7 +48,9 @@ final class TrackersViewController: UIViewController {
             TrackersHeaders.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "header")
-        categories = [TrackerCategory(header: "Важное", trackers: trackerStore.trackers)]
+        if trackerCategoryStore.categories != [] {
+            categories = [TrackerCategory(header: trackerCategoryStore.categories[0], trackers: trackerStore.trackers)]
+        }
         reloadvisibleCategories()
         reloadPlaceholder()
     }
@@ -287,21 +290,26 @@ extension TrackersViewController: TrackersCellDelegate {
 //MARK: - HabitCreationViewControllerDelegate
 extension TrackersViewController: HabitCreationViewControllerDelegate {
     func addNewHabit(tracker: Tracker, header: String) {
+        try! trackerCategoryStore.addNewCategory(header)
         try! trackerStore.addNewTracker(tracker)
+        
     }
 }
 
-//MARK: - HabitCreationViewControllerDelegate
+//MARK: - EventCreationViewControllerDelegate
 extension TrackersViewController: EventCreationViewControllerDelegate {
     func addNewEvent(tracker: Tracker, header: String) {
         try! trackerStore.addNewTracker(tracker)
+        try! trackerCategoryStore.addNewCategory(header)
     }
 }
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
-        categories = [TrackerCategory(header: "Важное", trackers: trackerStore.trackers)]
+        if trackerCategoryStore.categories != [] {
+            categories = [TrackerCategory(header: trackerCategoryStore.categories[0], trackers: trackerStore.trackers)]
+        }
         visibleCategories = categories
         
         reloadPlaceholder()
@@ -330,6 +338,12 @@ extension TrackersViewController: TrackerStoreDelegate {
     }
 }
 
+//MARK: - TrackerStoreDelegate
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func storeCategory(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
+        // to be done
+    }
+}
 
 //MARK: - UITextFieldDelegate
 extension TrackersViewController: UITextFieldDelegate {

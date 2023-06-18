@@ -14,6 +14,7 @@ enum TrackerStoreError: Error {
     case decodingErrorInvalidName
     case decodingErrorInvalidColor
     case decodingErrorInvalidEmoji
+    case decodingErrorInvalidSchedule
 }
 
 struct TrackerStoreUpdate {
@@ -91,14 +92,15 @@ final class TrackerStore: NSObject {
         guard let colorHex = trackerCoreData.colorHex else {
             throw TrackerStoreError.decodingErrorInvalidColor
         }
-        
-        let scheduleSting = trackerCoreData.scheduleString
+        guard let scheduleSting = trackerCoreData.scheduleString else {
+            throw TrackerStoreError.decodingErrorInvalidSchedule
+        }
         
         return Tracker(id: id,
                        name: name,
                        color: uiColorMarshalling.color(from: colorHex),
                        emogi: emoji,
-                       schedule: weekDayMarshalling.makeWeekDaySetFromString(scheduleString: scheduleSting ?? ""))
+                       schedule: weekDayMarshalling.makeWeekDaySetFromString(scheduleString: scheduleSting))
     }
     
     func addNewTracker(_ newTracker: Tracker) throws {
@@ -108,6 +110,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.emoji = newTracker.emogi
         trackerCoreData.colorHex = uiColorMarshalling.hexString(from: newTracker.color)
         trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: newTracker.schedule)
+        //trackerCoreData.category =
         try context.save()
     }
     
