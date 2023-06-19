@@ -286,17 +286,9 @@ extension TrackersViewController: TrackersCellDelegate {
     }
 }
 
-//MARK: - HabitCreationViewControllerDelegate
-extension TrackersViewController: HabitCreationViewControllerDelegate {
-    func addNewHabit(tracker: Tracker, header: String) {
-        try! trackerCategoryStore.addNewCategory(header)
-        try! trackerStore.addNewTracker(tracker)
-    }
-}
-
-//MARK: - EventCreationViewControllerDelegate
-extension TrackersViewController: EventCreationViewControllerDelegate {
-    func addNewEvent(tracker: Tracker, header: String) {
+//MARK: - CreationViewControllerDelegate
+extension TrackersViewController: CreationViewControllerDelegate {
+    func addNewTracker(tracker: Tracker, header: String) {
         try! trackerCategoryStore.addNewCategory(header)
         try! trackerStore.addNewTracker(tracker)
     }
@@ -344,13 +336,8 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController : TrackerRecordStoreDelegate {
-    func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdate) {
+    func store(_ store: TrackerRecordStore) {
         completedTrackers = trackerRecordStore.trackersRecords
-        
-        let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
-        let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
-        collectionView.reloadItems(at: insertedIndexPaths)
-        collectionView.reloadItems(at: deletedIndexPaths)
         
         let visibleTrackers = visibleCategories[0].trackers.count
         var visiblePaths = [IndexPath]()
