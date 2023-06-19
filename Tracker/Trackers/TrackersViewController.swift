@@ -344,9 +344,22 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController : TrackerRecordStoreDelegate {
-    func store(_ store: TrackerRecordStore) {
+    func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdate) {
         completedTrackers = trackerRecordStore.trackersRecords
-        collectionView.reloadData()
+        
+        let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
+        let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
+        collectionView.reloadItems(at: insertedIndexPaths)
+        collectionView.reloadItems(at: deletedIndexPaths)
+        
+        let visibleTrackers = visibleCategories[0].trackers.count
+        var visiblePaths = [IndexPath]()
+        
+        for i in 0..<visibleTrackers {
+            visiblePaths.append(IndexPath(row: i, section: 0))
+        }
+        
+        collectionView.reloadItems(at: visiblePaths)
     }
 }
 

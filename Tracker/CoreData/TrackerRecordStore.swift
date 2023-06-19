@@ -14,8 +14,13 @@ enum TrackerRecordStoreError: Error {
     case decodingErrorInvalidDate
 }
 
+struct TrackerRecordStoreUpdate {
+    let insertedIndexes: IndexSet
+    let deletedIndexes: IndexSet
+}
+
 protocol TrackerRecordStoreDelegate: AnyObject {
-    func store(_ store: TrackerRecordStore)
+    func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdate)
 }
 
 final class TrackerRecordStore: NSObject {
@@ -23,6 +28,8 @@ final class TrackerRecordStore: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
 
     weak var delegate: TrackerRecordStoreDelegate?
+    private var insertedIndexes: IndexSet?
+    private var deletedIndexes: IndexSet?
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -104,7 +111,43 @@ final class TrackerRecordStore: NSObject {
 
 //MARK: - NSFetchedResultsControllerDelegate
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexes = IndexSet()
+        deletedIndexes = IndexSet()
+    }
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.store(self)
+        delegate?.store(
+            self,
+            didUpdate: TrackerRecordStoreUpdate(
+                insertedIndexes: insertedIndexes!,
+                deletedIndexes: deletedIndexes!
+            )
+        )
+        insertedIndexes = nil
+        deletedIndexes = nil
+    }
+    
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
+        switch type {
+        case .insert:
+            guard let indexPath = newIndexPath else { fatalError() }
+            insertedIndexes?.insert(indexPath.item)
+        case .delete:
+            guard let indexPath = indexPath else { fatalError() }
+            deletedIndexes?.insert(indexPath.item)
+        case .update:
+            fatalError()
+        case .move:
+            fatalError()
+        @unknown default:
+            fatalError()
+        }
     }
 }
