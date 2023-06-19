@@ -218,11 +218,13 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.isCompletedToday = isTrackerCompletedToday(id: currentTracker.id)
         
         if cell.isCompletedToday {
-            cell.button.setImage(UIImage(named: "Done"), for: .normal)
-            cell.colorRound.backgroundColor = currentTracker.color.withAlphaComponent(0.3)
+            let buttonImage = UIImage(named: "DoneButton")?.withTintColor(currentTracker.color)
+            cell.button.setImage(buttonImage, for: .normal)
+            cell.done.isHidden = false
         } else {
-            cell.button.setImage(UIImage(systemName: "plus"), for: .normal)
-            cell.colorRound.backgroundColor = currentTracker.color
+            let buttonImage = UIImage(named: "AddButton")?.withTintColor(currentTracker.color)
+            cell.done.isHidden = true
+            cell.button.setImage(buttonImage, for: .normal)
         }
         
         cell.completedDays = completedTrackers.filter { $0.id == currentTracker.id}.count
