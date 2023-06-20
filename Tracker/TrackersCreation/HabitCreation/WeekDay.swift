@@ -35,7 +35,7 @@ enum WeekDay: String {
         }
     }
     
-    func makeInt(filterWeekday: Int) -> WeekDay {
+    func makeWeekDay(filterWeekday: Int) -> WeekDay {
         var day = WeekDay.monday
         if filterWeekday == 1 { day = .sunday }
         if filterWeekday == 2 { day = .monday }
@@ -45,6 +45,18 @@ enum WeekDay: String {
         if filterWeekday == 6 { day = .friday }
         if filterWeekday == 7 { day = .saturday }
         return day
+    }
+    
+    func makeInt(day: WeekDay) -> Int {
+        var int = Int()
+        if day == .sunday { int = 1 }
+        if day == .monday { int = 2 }
+        if day == .tuesday { int = 3 }
+        if day == .wednesday { int = 4 }
+        if day == .thursday { int = 5 }
+        if day == .friday { int = 6 }
+        if day == .saturday { int = 7 }
+        return int
     }
     
     static func <(lhs: WeekDay, rhs: WeekDay) -> Bool {

@@ -14,7 +14,6 @@ final class TrackersNavigationContoller: UINavigationController {
     
     override func viewDidLoad() {
         viewControllers = [controller]
-        TrackersStorage.shared.delegate = controller
         addPlusButton()
     }
     

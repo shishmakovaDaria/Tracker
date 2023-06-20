@@ -26,8 +26,8 @@ final class TrackersCell: UICollectionViewCell {
     let emoji = UILabel()
     let whiteRound = UIView()
     let day = UILabel()
-    let colorRound = UIView()
     let button = UIButton()
+    let done = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,15 +63,14 @@ final class TrackersCell: UICollectionViewCell {
         contentView.addSubview(day)
         day.translatesAutoresizingMaskIntoConstraints = false
         
-        colorRound.layer.cornerRadius = 17
-        colorRound.layer.masksToBounds = true
-        contentView.addSubview(colorRound)
-        colorRound.translatesAutoresizingMaskIntoConstraints = false
-        
         button.addTarget(self, action: #selector(trackerButtonClicked(_:)), for: .touchUpInside)
         button.tintColor = .white
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        done.image = UIImage(named: "Done")
+        button.addSubview(done)
+        done.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupConstraints() {
@@ -94,14 +93,14 @@ final class TrackersCell: UICollectionViewCell {
             day.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             day.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 16),
             day.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-            colorRound.heightAnchor.constraint(equalToConstant: 34),
-            colorRound.widthAnchor.constraint(equalToConstant: 34),
-            colorRound.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            colorRound.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            button.heightAnchor.constraint(equalToConstant: 13),
-            button.widthAnchor.constraint(equalToConstant: 13),
-            button.centerXAnchor.constraint(equalTo: colorRound.centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: colorRound.centerYAnchor)
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            button.heightAnchor.constraint(equalToConstant: 34),
+            button.widthAnchor.constraint(equalToConstant: 34),
+            done.heightAnchor.constraint(equalToConstant: 12),
+            done.widthAnchor.constraint(equalToConstant: 12),
+            done.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            done.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
     }
     
