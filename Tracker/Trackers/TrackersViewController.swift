@@ -15,18 +15,6 @@ final class TrackersViewController: UIViewController {
     private let datePicker = UIDatePicker()
     private let searchTextField = UISearchTextField()
     private var categories: [TrackerCategory] = []
-    //mock:
-    /*private var categories = [
-        TrackerCategory(header: "Важное",
-                        trackers: [Tracker(id: UUID(), name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: [.monday, .tuesday, .friday]),
-                                   Tracker(id: UUID(), name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: [.monday, .sunday]),
-                                   Tracker(id: UUID(), name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: [.saturday, .tuesday])]),
-        TrackerCategory(header: "Домашний уют",
-                        trackers: [Tracker(id: UUID(), name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: [.wednesday]),
-                                   Tracker(id: UUID(), name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: [.sunday])]),
-        TrackerCategory(header: "Радостные мелочи",
-                        trackers: [Tracker(id: UUID(), name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
-    
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private let trackerStore = TrackerStore()
@@ -334,7 +322,7 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     }
 }
 
-//MARK: - TrackerStoreDelegate
+//MARK: - TrackerRecordStoreDelegate
 extension TrackersViewController : TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore) {
         completedTrackers = trackerRecordStore.trackersRecords

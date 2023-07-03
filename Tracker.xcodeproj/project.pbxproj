@@ -100,6 +100,15 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		611DCD412A50BE2D00F4572C /* CategoryCreation */ = {
+			isa = PBXGroup;
+			children = (
+				61D1E21B2A2A757D00A9F89E /* CategoryViewController.swift */,
+				61D1E21D2A2A7D8E00A9F89E /* NewCategoryViewController.swift */,
+			);
+			path = CategoryCreation;
+			sourceTree = "<group>";
+		};
 		6134659C2A3DA842008A31F9 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +128,7 @@
 				613B25BB2A2A369B00DB355F /* HabitCreationViewController.swift */,
 				61D1E2212A2BF65F00A9F89E /* ScheduleViewController.swift */,
 				61CEBD622A3380E00029D582 /* WeekDay.swift */,
+				611DCD412A50BE2D00F4572C /* CategoryCreation */,
 			);
 			path = HabitCreation;
 			sourceTree = "<group>";
@@ -158,8 +168,6 @@
 				61B76AEB2A292A2F00A98644 /* TrackersCreationViewController.swift */,
 				618C06E12A3CBC0200A6F897 /* HabitCreation */,
 				618C06E22A3CBC5900A6F897 /* EventCreation */,
-				61D1E21B2A2A757D00A9F89E /* CategoryViewController.swift */,
-				61D1E21D2A2A7D8E00A9F89E /* NewCategoryViewController.swift */,
 				61D1E21F2A2BE24D00A9F89E /* CustomTableViewCell.swift */,
 				618C06E32A3CBC9800A6F897 /* EmojiCell.swift */,
 				618C06E52A3CE7FA00A6F897 /* ColorCell.swift */,

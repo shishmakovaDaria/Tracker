@@ -8,7 +8,16 @@
 import Foundation
 import UIKit
 
+protocol NewCategoryViewControllerDelegate: AnyObject {
+    func addNewCategory(newCategory: String)
+}
+
 final class NewCategoryViewController: UIViewController {
+    
+    private var newCategory: String?
+    private let categoryName = CustomTextField()
+    private let doneButton = UIButton()
+    var delegate: NewCategoryViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,12 +38,15 @@ final class NewCategoryViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-        let categoryName = CustomTextField()
-        categoryName.text = "Введите название категории"
-        categoryName.textColor = .ypGray
+        categoryName.placeholder = "Введите название категории"
+        categoryName.textColor = .ypBlack
         categoryName.font = .systemFont(ofSize: 17)
         categoryName.backgroundColor = .backgroundDay
         categoryName.layer.cornerRadius = 16
+        categoryName.clearButtonMode = .whileEditing
+        categoryName.returnKeyType = .go
+        categoryName.becomeFirstResponder()
+        categoryName.delegate = self
         view.addSubview(categoryName)
         categoryName.translatesAutoresizingMaskIntoConstraints = false
         
@@ -45,11 +57,11 @@ final class NewCategoryViewController: UIViewController {
             categoryName.topAnchor.constraint(equalTo: view.topAnchor, constant: 87)
         ])
         
-        let doneButton = UIButton()
         doneButton.backgroundColor = .ypGray
         doneButton.setTitle("Готово", for: .normal)
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         doneButton.layer.cornerRadius = 16
+        doneButton.isEnabled = false
         doneButton.addTarget(self, action: #selector(doneButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(doneButton)
         doneButton.translatesAutoresizingMaskIntoConstraints = false
@@ -63,6 +75,23 @@ final class NewCategoryViewController: UIViewController {
     }
     
     @objc private func doneButtonDidTap(_ sender: Any?) {
-        //to be done
+        delegate?.addNewCategory(newCategory: newCategory ?? "")
+        dismiss(animated: true)
+    }
+}
+
+//MARK: - UITextFieldDelegate
+extension NewCategoryViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        categoryName.resignFirstResponder()
+        
+        if let text = categoryName.text {
+            newCategory = text
+        }
+        
+        doneButton.backgroundColor = .ypBlack
+        doneButton.isEnabled = true
+        
+        return true
     }
 }
