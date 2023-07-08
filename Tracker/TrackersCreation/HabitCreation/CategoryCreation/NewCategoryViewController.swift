@@ -17,6 +17,7 @@ final class NewCategoryViewController: UIViewController {
     private var newCategory: String?
     private let categoryName = CustomTextField()
     private let doneButton = UIButton()
+    private let trackerCategoryStore = TrackerCategoryStore()
     var delegate: NewCategoryViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -76,6 +77,7 @@ final class NewCategoryViewController: UIViewController {
     
     @objc private func doneButtonDidTap(_ sender: Any?) {
         delegate?.addNewCategory(newCategory: newCategory ?? "")
+        try! trackerCategoryStore.addNewCategory(newCategory ?? "")
         dismiss(animated: true)
     }
 }

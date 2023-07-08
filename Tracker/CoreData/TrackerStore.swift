@@ -26,9 +26,6 @@ struct TrackerStoreUpdate {
     let deletedIndexes: [IndexPath]
     let updatedIndexes: [IndexPath]
     let movedIndexes: Set<Move>
-    
-    let insertedSectionIndexes: IndexSet
-    let deletedSectionIndexes: IndexSet
 }
 
 protocol TrackerStoreDelegate: AnyObject {
@@ -49,8 +46,6 @@ final class TrackerStore: NSObject {
     private var deletedIndexes: [IndexPath]?
     private var updatedIndexes: [IndexPath]?
     private var movedIndexes: Set<TrackerStoreUpdate.Move>?
-    private var insertedSectionIndexes: IndexSet?
-    private var deletedSectionIndexes: IndexSet?
     
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -69,7 +64,6 @@ final class TrackerStore: NSObject {
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
-            //sectionNameKeyPath: #keyPath(TrackerCoreData.category),
             cacheName: nil
         )
         controller.delegate = self
@@ -146,8 +140,6 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         deletedIndexes = [IndexPath]()
         updatedIndexes = [IndexPath]()
         movedIndexes = Set<TrackerStoreUpdate.Move>()
-        insertedSectionIndexes = IndexSet()
-        deletedSectionIndexes = IndexSet()
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -157,17 +149,13 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
                 insertedIndexes: insertedIndexes!,
                 deletedIndexes: deletedIndexes!,
                 updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!,
-                insertedSectionIndexes: insertedSectionIndexes!,
-                deletedSectionIndexes: deletedSectionIndexes!
+                movedIndexes: movedIndexes!
             )
         )
         insertedIndexes = nil
         deletedIndexes = nil
         updatedIndexes = nil
         movedIndexes = nil
-        insertedSectionIndexes = nil
-        deletedSectionIndexes = nil
     }
 
     func controller(
@@ -194,19 +182,4 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
             fatalError()
         }
     }
-    
-    /*func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange sectionInfo: NSFetchedResultsSectionInfo,
-        atSectionIndex sectionIndex: Int,
-        for type: NSFetchedResultsChangeType
-    ) {
-        switch type {
-        case .insert:
-            insertedSectionIndexes?.insert(sectionIndex)
-        case .delete:
-            deletedSectionIndexes?.insert(sectionIndex)
-        default: break
-        }
-    }*/
 }

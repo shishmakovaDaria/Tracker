@@ -165,11 +165,6 @@ final class TrackersViewController: UIViewController {
         reloadPlaceholder()
     }
     
-    private func showAllCategories() {
-        visibleCategories = categories
-        collectionView.reloadData()
-    }
-    
     private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in
             let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
@@ -277,13 +272,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: - TrackersCellDelegate
 extension TrackersViewController: TrackersCellDelegate {
     func markTrackerAsDone(id: UUID, at indexPath: IndexPath) {
-        //showAllCategories()
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
         try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
     }
     
     func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath) {
-        //showAllCategories()
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
         try! trackerRecordStore.removeRecord(trackerRecord)
     }
@@ -292,8 +285,6 @@ extension TrackersViewController: TrackersCellDelegate {
 //MARK: - CreationViewControllerDelegate
 extension TrackersViewController: CreationViewControllerDelegate {
     func addNewTracker(tracker: Tracker, header: String) {
-        //showAllCategories()
-        try! trackerCategoryStore.addNewCategory(header)
         try! trackerStore.addNewTracker(tracker, currentCategory: header)
     }
 }
@@ -303,20 +294,6 @@ extension TrackersViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
         categories = updateCategoriesFromStore()
         visibleCategories = categories
-        
-        /*collectionView.performBatchUpdates {
-            collectionView.insertSections(update.insertedSectionIndexes)
-            collectionView.deleteSections(update.deletedSectionIndexes)
-            collectionView.insertItems(at: update.insertedIndexes)
-            collectionView.insertItems(at: update.deletedIndexes)
-            collectionView.insertItems(at: update.updatedIndexes)
-            for move in update.movedIndexes {
-                collectionView.moveItem(
-                    at: move.oldIndex,
-                    to: move.newIndex
-                )
-            }
-        }*/
         collectionView.reloadData()
         reloadVisibleCategories()
         reloadPlaceholder()
@@ -325,8 +302,8 @@ extension TrackersViewController: TrackerStoreDelegate {
 
 //MARK: - TrackerCategoryStoreDelegate
 extension TrackersViewController: TrackerCategoryStoreDelegate {
-    func storeCategory(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
-        // to be done
+    func storeCategory(_ store: TrackerCategoryStore) {
+        categories = updateCategoriesFromStore()
     }
 }
 
@@ -334,15 +311,6 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 extension TrackersViewController : TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore) {
         completedTrackers = trackerRecordStore.trackersRecords
-        
-        let visibleTrackers = visibleCategories[0].trackers.count
-        var visiblePaths = [IndexPath]()
-        
-        for i in 0..<visibleTrackers {
-            visiblePaths.append(IndexPath(row: i, section: 0))
-        }
-        
-        collectionView.reloadItems(at: visiblePaths)
     }
 }
 
