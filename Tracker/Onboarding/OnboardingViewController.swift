@@ -36,6 +36,7 @@ final class OnboardingViewController: UIPageViewController {
         super.viewDidLoad()
         
         setUpPageControl()
+        setUpButton()
         dataSource = self
         delegate = self
         if let first = pages.first {
@@ -53,6 +54,29 @@ final class OnboardingViewController: UIPageViewController {
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -168)
         ])
+    }
+    
+    private func setUpButton() {
+        let button = UIButton()
+        button.backgroundColor = .ypBlack
+        button.setTitle("Вот это технологии!", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(buttonDidTap(_:)), for: .touchUpInside)
+        view.addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            button.heightAnchor.constraint(equalToConstant: 60),
+            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -84)
+        ])
+    }
+    
+    @objc private func buttonDidTap(_ sender: Any?) {
+        let sceneDelegate = UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate
+            sceneDelegate.window!.rootViewController = TabBarController()
     }
 }
 

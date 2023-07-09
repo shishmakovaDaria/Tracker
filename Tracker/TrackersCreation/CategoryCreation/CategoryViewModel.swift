@@ -24,18 +24,7 @@ final class CategoryViewModel {
         categories = trackerCategoryStore.categories
     }
     
-    func configureCell(for cell: CustomTableViewCell, with indexPath: IndexPath, width: CGFloat) {
-        cell.header.text = categories[indexPath.row]
-        cell.accessoryType = .none
-        
-        if indexPath.row == categories.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: width)
-        } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        }
-    }
-    
-    func didTapRow(at indexPath: IndexPath) -> String {
+    func currentCategory(at indexPath: IndexPath) -> String {
         return categories[indexPath.row]
     }
 }

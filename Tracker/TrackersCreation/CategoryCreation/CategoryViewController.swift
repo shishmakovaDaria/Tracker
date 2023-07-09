@@ -145,7 +145,16 @@ extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
-        viewModel?.configureCell(for: cell, with: indexPath, width: tableView.bounds.size.width)
+        
+        cell.header.text = viewModel?.currentCategory(at: indexPath)
+        cell.accessoryType = .none
+        
+        if indexPath.row == (viewModel?.categories.count ?? 0) - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
+        
         return cell
     }
 }
@@ -155,7 +164,7 @@ extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        let chosenCategory = viewModel?.didTapRow(at: indexPath)
+        let chosenCategory = viewModel?.currentCategory(at: indexPath)
         delegate?.addCategory(chosenCategory: chosenCategory ?? "")
         dismiss(animated: true)
     }
