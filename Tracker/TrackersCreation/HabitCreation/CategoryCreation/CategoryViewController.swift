@@ -13,10 +13,8 @@ protocol CategoryViewControllerDelegate: AnyObject {
 }
 
 final class CategoryViewController: UIViewController {
-    
+    private var viewModel: CategoryViewModel?
     private let tableView = UITableView()
-    private let trackerCategoryStore = TrackerCategoryStore()
-    private var categories: [String] = []
     private let placeholder = UIImageView()
     private let placeholderLabel = UILabel()
     private var tableViewHeightConstraint: NSLayoutConstraint?
@@ -29,13 +27,22 @@ final class CategoryViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
-        if trackerCategoryStore.categories != [] {
-            categories = trackerCategoryStore.categories
+        
+        viewModel = CategoryViewModel()
+        viewModel?.$categories.bind { [weak self] _ in
+            self?.updateTableView()
         }
-        reloadPlaceholder()
-        if categories.count > 7 {
+        
+        updateTableView()
+    }
+    
+    private func updateTableView() {
+        if viewModel?.categories.count ?? 0 > 7 {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -130).isActive = true
         }
+        tableViewHeightConstraint?.constant = CGFloat((viewModel?.categories.count ?? 0)*75)
+        tableView.reloadData()
+        reloadPlaceholder()
     }
     
     private func configureView() {
@@ -79,7 +86,7 @@ final class CategoryViewController: UIViewController {
             toItem: nil,
             attribute: .height,
             multiplier: 1,
-            constant: CGFloat(trackerCategoryStore.categories.count*75))
+            constant: CGFloat((viewModel?.categories.count ?? 0)*75))
         
         guard let tableViewHeightConstraint = tableViewHeightConstraint else { return }
         
@@ -118,13 +125,12 @@ final class CategoryViewController: UIViewController {
     }
     
     private func reloadPlaceholder() {
-        placeholder.isHidden = !categories.isEmpty
-        placeholderLabel.isHidden = !categories.isEmpty
+        placeholder.isHidden = !(viewModel?.categories ?? []).isEmpty
+        placeholderLabel.isHidden = !(viewModel?.categories ?? []).isEmpty
     }
     
     @objc private func addButtonDidTap(_ sender: Any?) {
         let vc = NewCategoryViewController()
-        vc.delegate = self
         vc.modalTransitionStyle = .flipHorizontal
         present(vc, animated: true)
     }
@@ -133,21 +139,13 @@ final class CategoryViewController: UIViewController {
 //MARK: - UITableViewDataSource
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel?.categories.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
-        cell.header.text = categories[indexPath.row]
-        cell.accessoryType = .none
-        
-        if indexPath.row == categories.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
-            cell.accessoryType = .checkmark
-        } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        }
+        viewModel?.configureCell(for: cell, with: indexPath, width: tableView.bounds.size.width)
         return cell
     }
 }
@@ -155,27 +153,10 @@ extension CategoryViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let indices = tableView.indexPathsForVisibleRows else { return }
-        for index in indices {
-            tableView.cellForRow(at: index)?.accessoryType = .none
-        }
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        let chosenCategory = viewModel?.didTapRow(at: indexPath)
+        delegate?.addCategory(chosenCategory: chosenCategory ?? "")
         dismiss(animated: true)
-        delegate?.addCategory(chosenCategory: categories[indexPath.row])
-    }
-}
-
-//MARK: - NewCategoryViewControllerDelegate
-extension CategoryViewController: NewCategoryViewControllerDelegate {
-    func addNewCategory(newCategory: String) {
-        categories.append(newCategory)
-        tableViewHeightConstraint?.constant += 75
-        if categories.count > 7 {
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -130).isActive = true
-        }
-        
-        reloadPlaceholder()
-        tableView.reloadData()
     }
 }
