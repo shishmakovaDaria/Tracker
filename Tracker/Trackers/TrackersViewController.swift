@@ -15,18 +15,6 @@ final class TrackersViewController: UIViewController {
     private let datePicker = UIDatePicker()
     private let searchTextField = UISearchTextField()
     private var categories: [TrackerCategory] = []
-    //mock:
-    /*private var categories = [
-        TrackerCategory(header: "Важное",
-                        trackers: [Tracker(id: UUID(), name: "Зарядка", color: .selection5, emogi: "⚽️", schedule: [.monday, .tuesday, .friday]),
-                                   Tracker(id: UUID(), name: "Пить достаточно воды", color: .selection1, emogi: "💧", schedule: [.monday, .sunday]),
-                                   Tracker(id: UUID(), name: "Не пить алкоголь", color: .selection15, emogi: "🍸", schedule: [.saturday, .tuesday])]),
-        TrackerCategory(header: "Домашний уют",
-                        trackers: [Tracker(id: UUID(), name: "Поливать цветы", color: .selection2, emogi: "🌺", schedule: [.wednesday]),
-                                   Tracker(id: UUID(), name: "Пылесосить", color: .selection12, emogi: "🥵", schedule: [.sunday])]),
-        TrackerCategory(header: "Радостные мелочи",
-                        trackers: [Tracker(id: UUID(), name: "Смешная фотография кошки", color: .selection3, emogi: "😻", schedule: nil)])]*/
-    
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private let trackerStore = TrackerStore()
@@ -51,7 +39,7 @@ final class TrackersViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "header")
         if trackerCategoryStore.categories != [] {
-            categories = [TrackerCategory(header: trackerCategoryStore.categories[0], trackers: trackerStore.trackers)]
+            categories = updateCategoriesFromStore()
         }
         completedTrackers = trackerRecordStore.trackersRecords
         reloadVisibleCategories()
@@ -184,6 +172,14 @@ final class TrackersViewController: UIViewController {
         }
     }
     
+    private func updateCategoriesFromStore() -> [TrackerCategory] {
+        trackerCategoryStore.categories.map { category in
+            let trackersInCurrentCategory = trackerStore.trackersForCurrentCategory(currentCategory: category)
+            return TrackerCategory(header: category,
+                                   trackers: trackersInCurrentCategory)
+        }
+    }
+    
     @objc private func dateChanged() {
         reloadVisibleCategories()
     }
@@ -289,39 +285,16 @@ extension TrackersViewController: TrackersCellDelegate {
 //MARK: - CreationViewControllerDelegate
 extension TrackersViewController: CreationViewControllerDelegate {
     func addNewTracker(tracker: Tracker, header: String) {
-        try! trackerCategoryStore.addNewCategory(header)
-        try! trackerStore.addNewTracker(tracker)
+        try! trackerStore.addNewTracker(tracker, currentCategory: header)
     }
 }
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
-     
-        categories = [TrackerCategory(header: trackerCategoryStore.categories.first ?? "Важное", trackers: trackerStore.trackers)]
-        
+        categories = updateCategoriesFromStore()
         visibleCategories = categories
-        
-        collectionView.performBatchUpdates {
-            if collectionView.numberOfSections == 0 {
-                collectionView.insertSections(IndexSet(integer: 0))
-                collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
-            } else {
-                let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
-                let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
-                let updatedIndexPaths = update.updatedIndexes.map { IndexPath(item: $0, section: 0) }
-                collectionView.insertItems(at: insertedIndexPaths)
-                collectionView.insertItems(at: deletedIndexPaths)
-                collectionView.insertItems(at: updatedIndexPaths)
-                for move in update.movedIndexes {
-                    collectionView.moveItem(
-                        at: IndexPath(item: move.oldIndex, section: 0),
-                        to: IndexPath(item: move.newIndex, section: 0)
-                    )
-                }
-            }
-        }
-        
+        collectionView.reloadData()
         reloadVisibleCategories()
         reloadPlaceholder()
     }
@@ -329,24 +302,15 @@ extension TrackersViewController: TrackerStoreDelegate {
 
 //MARK: - TrackerCategoryStoreDelegate
 extension TrackersViewController: TrackerCategoryStoreDelegate {
-    func storeCategory(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
-        // to be done
+    func storeCategory(_ store: TrackerCategoryStore) {
+        categories = updateCategoriesFromStore()
     }
 }
 
-//MARK: - TrackerStoreDelegate
+//MARK: - TrackerRecordStoreDelegate
 extension TrackersViewController : TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore) {
         completedTrackers = trackerRecordStore.trackersRecords
-        
-        let visibleTrackers = visibleCategories[0].trackers.count
-        var visiblePaths = [IndexPath]()
-        
-        for i in 0..<visibleTrackers {
-            visiblePaths.append(IndexPath(row: i, section: 0))
-        }
-        
-        collectionView.reloadItems(at: visiblePaths)
     }
 }
 

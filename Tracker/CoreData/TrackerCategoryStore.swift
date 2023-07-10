@@ -13,34 +13,15 @@ enum TrackerCategoryStoreError: Error {
     case decodingErrorInvalidHeader
 }
 
-struct TrackerCategoryStoreUpdate {
-    struct Move: Hashable {
-        let oldIndex: Int
-        let newIndex: Int
-    }
-    let insertedIndexes: IndexSet
-    let deletedIndexes: IndexSet
-    let updatedIndexes: IndexSet
-    let movedIndexes: Set<Move>
-}
-
 protocol TrackerCategoryStoreDelegate: AnyObject {
-    func storeCategory(
-        _ store: TrackerCategoryStore,
-        didUpdate update: TrackerCategoryStoreUpdate
-    )
+    func storeCategory(_ store: TrackerCategoryStore)
 }
 
 final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
-
     weak var delegate: TrackerCategoryStoreDelegate?
-    private var insertedIndexes: IndexSet?
-    private var deletedIndexes: IndexSet?
-    private var updatedIndexes: IndexSet?
-    private var movedIndexes: Set<TrackerCategoryStoreUpdate.Move>?
-    
+   
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         try! self.init(context: context)
@@ -81,14 +62,15 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func addNewCategory(_ newCategory: String) throws {
-        if categories.contains(newCategory) == false {
-            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
-            trackerCategoryCoreData.header = newCategory
-            try context.save()
-        }
+        let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+        trackerCategoryCoreData.header = newCategory
+        try context.save()
     }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.storeCategory(self)
+    }
 }

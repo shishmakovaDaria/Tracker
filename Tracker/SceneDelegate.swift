@@ -14,7 +14,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = TabBarController()
+        
+        if(UserDefaults.standard.bool(forKey: "notFirstTimeInApp") == false) {
+            UserDefaults.standard.set(true, forKey: "notFirstTimeInApp")
+            let vc = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+            window?.rootViewController = vc
+        } else {
+            window?.rootViewController = TabBarController()
+        }
         window?.makeKeyAndVisible()
     }
 }
