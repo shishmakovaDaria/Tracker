@@ -95,6 +95,7 @@ final class TrackersViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.calendar.firstWeekday = 2
+        datePicker.locale = .init(identifier: "Ru")
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         view.addSubview(datePicker)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -272,8 +273,13 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: - TrackersCellDelegate
 extension TrackersViewController: TrackersCellDelegate {
     func markTrackerAsDone(id: UUID, at indexPath: IndexPath) {
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
+        let date = Date()
+        if datePicker.date > date {
+            return
+        } else {
+            let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+            try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
+        }
     }
     
     func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath) {
