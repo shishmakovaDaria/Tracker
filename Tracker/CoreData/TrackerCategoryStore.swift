@@ -66,6 +66,16 @@ final class TrackerCategoryStore: NSObject {
         trackerCategoryCoreData.header = newCategory
         try context.save()
     }
+    
+    func deleteAllCategories() throws {
+        let categoriesFetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        guard let objects = try? context.fetch(categoriesFetchRequest) else { return }
+        
+        for object in objects {
+            context.delete(object)
+            try context.save()
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate
