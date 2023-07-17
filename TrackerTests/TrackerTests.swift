@@ -21,6 +21,20 @@ final class TrackerTests: XCTestCase {
         try! trackerCategoryStore.addNewCategory("Важное")
         try! trackerStore.addDefaultTracker()
         
-        assertSnapshot(matching: vc, as: .image)
+        assertSnapshot(matching: vc, as: .image(traits: .init(userInterfaceStyle: .light)))
+    }
+    
+    func testDarkTheme() {
+        let vc = TrackersViewController()
+        let trackerStore = TrackerStore()
+        let trackerCategoryStore = TrackerCategoryStore()
+        
+        try! trackerStore.deleteAllTrackers()
+        try! trackerCategoryStore.deleteAllCategories()
+        
+        try! trackerCategoryStore.addNewCategory("Важное")
+        try! trackerStore.addDefaultTracker()
+        
+        assertSnapshot(matching: vc, as: .image(traits: .init(userInterfaceStyle: .dark)))
     }
 }

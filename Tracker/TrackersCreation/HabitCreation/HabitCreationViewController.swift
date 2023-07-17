@@ -35,7 +35,7 @@ final class HabitCreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -77,7 +77,7 @@ final class HabitCreationViewController: UIViewController {
         trackersName.placeholder = "Введите название трекера"
         trackersName.textColor = .ypBlack
         trackersName.font = .systemFont(ofSize: 17)
-        trackersName.backgroundColor = .backgroundDay
+        trackersName.backgroundColor = .background
         trackersName.layer.cornerRadius = 16
         trackersName.clearButtonMode = .whileEditing
         trackersName.returnKeyType = .go
@@ -109,6 +109,7 @@ final class HabitCreationViewController: UIViewController {
         
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         scrollView.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -142,6 +143,7 @@ final class HabitCreationViewController: UIViewController {
             emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32)
         ])
         
+        emojiCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(emojiCollectionView)
         emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -164,6 +166,7 @@ final class HabitCreationViewController: UIViewController {
             colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 40)
         ])
         
+        colorCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(colorCollectionView)
         colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
         

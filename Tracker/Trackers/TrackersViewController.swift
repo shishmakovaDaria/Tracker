@@ -53,6 +53,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func addCollectionView() {
+        collectionView.backgroundColor = .ypWhite
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -65,6 +66,8 @@ final class TrackersViewController: UIViewController {
     }
     
     private func addViews() {
+        view.backgroundColor = .ypWhite
+        
         let label = UILabel()
         label.text = "Трекеры"
         label.font = .boldSystemFont(ofSize: 34)
@@ -78,7 +81,6 @@ final class TrackersViewController: UIViewController {
         
         searchTextField.placeholder = "Поиск"
         searchTextField.textColor = .ypBlack
-        searchTextField.backgroundColor = .searchBarColor
         searchTextField.delegate = self
         searchTextField.returnKeyType = .go
         searchTextField.addTarget(self, action: #selector(searchTextFieldChanged), for: .editingChanged)

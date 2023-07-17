@@ -14,8 +14,9 @@ extension UIColor {
     static var ypLightGray: UIColor {UIColor(named: "LightGray") ?? UIColor()}
     static var ypRed: UIColor {UIColor(named: "Red") ?? UIColor()}
     static var ypBlack: UIColor {UIColor(named: "Black") ?? UIColor()}
+    static var ypWhite: UIColor {UIColor(named: "White") ?? UIColor()}
     static var searchBarColor: UIColor {UIColor(named: "SearchBar") ?? UIColor()}
-    static var backgroundDay: UIColor {UIColor(named: "BackgroundDay") ?? UIColor()}
+    static var background: UIColor {UIColor(named: "Background") ?? UIColor()}
     static var selection1: UIColor {UIColor(named: "Selection1") ?? UIColor()}
     static var selection2: UIColor {UIColor(named: "Selection2") ?? UIColor()}
     static var selection3: UIColor {UIColor(named: "Selection3") ?? UIColor()}
@@ -34,4 +35,12 @@ extension UIColor {
     static var selection16: UIColor {UIColor(named: "Selection16") ?? UIColor()}
     static var selection17: UIColor {UIColor(named: "Selection17") ?? UIColor()}
     static var selection18: UIColor {UIColor(named: "Selection18") ?? UIColor()}
+    
+    static let separatorColor = UIColor { (traits: UITraitCollection) -> UIColor in
+        if traits.userInterfaceStyle == .light {
+            return UIColor(named: "Gray") ?? UIColor()
+        } else {
+            return UIColor.black
+        }
+    }
 }

@@ -17,7 +17,7 @@ final class CustomTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         let view = UIView(frame: contentView.frame)
-        view.backgroundColor = .backgroundDay
+        view.backgroundColor = .background
         backgroundView = view
         accessoryType = .disclosureIndicator
         

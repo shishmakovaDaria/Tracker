@@ -22,7 +22,7 @@ final class NewCategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
     }
     
@@ -42,7 +42,7 @@ final class NewCategoryViewController: UIViewController {
         categoryName.placeholder = "Введите название категории"
         categoryName.textColor = .ypBlack
         categoryName.font = .systemFont(ofSize: 17)
-        categoryName.backgroundColor = .backgroundDay
+        categoryName.backgroundColor = .background
         categoryName.layer.cornerRadius = 16
         categoryName.clearButtonMode = .whileEditing
         categoryName.returnKeyType = .go
@@ -60,6 +60,7 @@ final class NewCategoryViewController: UIViewController {
         
         doneButton.backgroundColor = .ypGray
         doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         doneButton.layer.cornerRadius = 16
         doneButton.isEnabled = false

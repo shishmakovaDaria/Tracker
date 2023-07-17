@@ -22,7 +22,7 @@ final class CategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -61,6 +61,7 @@ final class CategoryViewController: UIViewController {
         let addButton = UIButton()
         addButton.backgroundColor = .ypBlack
         addButton.setTitle("Добавить категорию", for: .normal)
+        addButton.setTitleColor(.ypWhite, for: .normal)
         addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         addButton.layer.cornerRadius = 16
         addButton.addTarget(self, action: #selector(addButtonDidTap(_:)), for: .touchUpInside)
@@ -76,6 +77,7 @@ final class CategoryViewController: UIViewController {
         
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         

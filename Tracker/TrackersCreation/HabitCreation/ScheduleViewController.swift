@@ -22,7 +22,7 @@ final class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -46,6 +46,7 @@ final class ScheduleViewController: UIViewController {
         let doneButton = UIButton()
         doneButton.backgroundColor = .ypBlack
         doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         doneButton.layer.cornerRadius = 16
         doneButton.addTarget(self, action: #selector(doneButtonDidTap(_:)), for: .touchUpInside)
@@ -63,6 +64,7 @@ final class ScheduleViewController: UIViewController {
     private func addTableView() {
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -147,7 +149,7 @@ extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = days[indexPath.row]
-        cell.backgroundColor = .backgroundDay
+        cell.backgroundColor = .background
         let toggle = UISwitch()
         toggle.tag = indexPath.row
         toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
