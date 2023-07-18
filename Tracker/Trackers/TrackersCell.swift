@@ -20,6 +20,7 @@ final class TrackersCell: UICollectionViewCell {
     var trackerId: UUID?
     var indexPath: IndexPath?
     var completedDays: Int?
+    var pinned: Bool = false
     
     let colorView = UIView()
     let trackerName = UILabel()
@@ -28,12 +29,21 @@ final class TrackersCell: UICollectionViewCell {
     let day = UILabel()
     let button = UIButton()
     let done = UIImageView()
+    let pin = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupViews()
         setupConstraints()
+    }
+    
+    func setupPin() {
+        if pinned == false {
+            pin.isHidden = true
+        } else {
+            pin.isHidden = false
+        }
     }
     
     private func setupViews() {
@@ -71,6 +81,10 @@ final class TrackersCell: UICollectionViewCell {
         done.image = UIImage(named: "Done")
         button.addSubview(done)
         done.translatesAutoresizingMaskIntoConstraints = false
+        
+        pin.image = UIImage(named: "Pin")
+        colorView.addSubview(pin)
+        pin.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupConstraints() {
@@ -100,7 +114,9 @@ final class TrackersCell: UICollectionViewCell {
             done.heightAnchor.constraint(equalToConstant: 12),
             done.widthAnchor.constraint(equalToConstant: 12),
             done.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            done.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+            done.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            pin.centerYAnchor.constraint(equalTo: whiteRound.centerYAnchor),
+            pin.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4)
         ])
     }
     

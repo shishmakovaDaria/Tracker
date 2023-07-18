@@ -92,6 +92,8 @@ final class TrackerStore: NSObject {
         guard let colorHex = trackerCoreData.colorHex else {
             throw TrackerStoreError.decodingErrorInvalidColor
         }
+        let pinned = trackerCoreData.pinned
+        
         guard let scheduleSting = trackerCoreData.scheduleString else {
             throw TrackerStoreError.decodingErrorInvalidSchedule
         }
@@ -100,6 +102,7 @@ final class TrackerStore: NSObject {
                        name: name,
                        color: uiColorMarshalling.color(from: colorHex),
                        emogi: emoji,
+                       pinned: NSNumber(booleanLiteral: pinned).boolValue,
                        schedule: weekDayMarshalling.makeWeekDaySetFromString(scheduleString: scheduleSting))
     }
     
@@ -108,6 +111,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.id = UUID()
         trackerCoreData.name = "Писать код"
         trackerCoreData.emoji = "🙂"
+        trackerCoreData.pinned = false
         trackerCoreData.colorHex = uiColorMarshalling.hexString(from: .selection1)
         trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
         let categoriesFetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
@@ -133,6 +137,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.name = newTracker.name
         trackerCoreData.emoji = newTracker.emogi
         trackerCoreData.colorHex = uiColorMarshalling.hexString(from: newTracker.color)
+        trackerCoreData.pinned = newTracker.pinned
         trackerCoreData.scheduleString = weekDayMarshalling.makeString(scheduleSet: newTracker.schedule)
         let categoriesFetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         categoriesFetchRequest.predicate = NSPredicate(format: "header = '\(currentCategory)'")
@@ -147,7 +152,8 @@ final class TrackerStore: NSObject {
         guard let objects = try? context.fetch(trackersFetchRequest) else { return [Tracker]() }
         
         for object in objects {
-            if object.category?.header == currentCategory {
+            if object.category?.header == currentCategory,
+               object.pinned == false {
                 guard let newTracker = try? tracker(from: object) else { return [Tracker]() }
                 currentTrackers.append(newTracker)
             }
@@ -163,6 +169,18 @@ final class TrackerStore: NSObject {
         for object in objects {
             if object.id == trackerId {
                 context.delete(object)
+                try context.save()
+            }
+        }
+    }
+    
+    func updatePin(_ trackerId: UUID, currentPinned: Bool) throws {
+        let trackersFetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        guard let objects = try? context.fetch(trackersFetchRequest) else { return }
+        
+        for object in objects {
+            if object.id == trackerId {
+                object.setValue(currentPinned, forKey: "pinned")
                 try context.save()
             }
         }

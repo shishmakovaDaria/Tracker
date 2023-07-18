@@ -239,6 +239,7 @@ final class HabitCreationViewController: UIViewController {
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
             emogi: emoji ?? "",
+            pinned: false,
             schedule: schedule)
         delegate?.addNewTracker(tracker: newTracker, header: category ?? "")
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)

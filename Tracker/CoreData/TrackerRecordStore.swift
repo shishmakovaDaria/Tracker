@@ -112,6 +112,16 @@ final class TrackerRecordStore: NSObject {
             }
         }
     }
+    
+    func removeAllRecords() throws {
+        let recordsFetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        guard let records = try? context.fetch(recordsFetchRequest) else { return }
+        
+        for record in records {
+            context.delete(record)
+            try context.save()
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate

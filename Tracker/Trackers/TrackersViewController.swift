@@ -178,15 +178,39 @@ final class TrackersViewController: UIViewController {
     }
     
     private func updateCategoriesFromStore() -> [TrackerCategory] {
-        trackerCategoryStore.categories.map { category in
+        var allCategories: [TrackerCategory] = []
+        
+        let pinnedTrackers = trackerStore.trackers.filter { tracker in
+            return tracker.pinned == true
+        }
+        
+        if pinnedTrackers.count != 0 {
+            allCategories.append(TrackerCategory(
+                header: "Закрепленные",
+                trackers: pinnedTrackers))
+        }
+        
+        let otherCategories = trackerCategoryStore.categories.map { category in
             let trackersInCurrentCategory = trackerStore.trackersForCurrentCategory(currentCategory: category)
+            
             return TrackerCategory(header: category,
                                    trackers: trackersInCurrentCategory)
         }
+        for category in otherCategories {
+            allCategories.append(category)
+        }
+        
+        return allCategories
     }
     
-    private func fixTracker(_ trackerId: UUID) {
-        // to do
+    private func fixTracker(_ trackerId: UUID, cell: TrackersCell) {
+        if cell.pinned == false {
+            cell.pinned = true
+        } else {
+            cell.pinned = false
+        }
+        cell.setupPin()
+        try? trackerStore.updatePin(trackerId, currentPinned: cell.pinned)
     }
     
     private func editTracker(_ trackerId: UUID) {
@@ -230,6 +254,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.trackerId = currentTracker.id
         cell.indexPath = indexPath
         cell.isCompletedToday = isTrackerCompletedToday(id: currentTracker.id)
+        cell.pinned = currentTracker.pinned
+        cell.setupPin()
         
         if cell.isCompletedToday {
             let buttonImage = UIImage(named: "DoneButton")?.withTintColor(currentTracker.color)
@@ -294,10 +320,18 @@ extension TrackersViewController: UICollectionViewDelegate {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackersCell else { return nil }
         guard let trackerId = cell.trackerId else { return nil }
         
+        var firstActionName: String {
+            if cell.pinned == false {
+                return "Закрепить"
+            } else {
+                return "Открепить"
+            }
+        }
+        
         return UIContextMenuConfiguration(actionProvider: { actions in
             return UIMenu(children: [
-                UIAction(title: "Закрепить") { [weak self] _ in
-                    self?.fixTracker(trackerId)
+                UIAction(title: "\(firstActionName)") { [weak self] _ in
+                    self?.fixTracker(trackerId, cell: cell)
                 },
                 UIAction(title: "Редактировать") { [weak self] _ in
                     self?.editTracker(trackerId)
