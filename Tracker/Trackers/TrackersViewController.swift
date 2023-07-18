@@ -69,7 +69,7 @@ final class TrackersViewController: UIViewController {
         view.backgroundColor = .ypWhite
         
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = "Trackers".localized()
         label.font = .boldSystemFont(ofSize: 34)
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +79,7 @@ final class TrackersViewController: UIViewController {
             label.topAnchor.constraint(equalTo: view.topAnchor, constant: 96)
         ])
         
-        searchTextField.placeholder = "Поиск"
+        searchTextField.placeholder = "Search".localized()
         searchTextField.textColor = .ypBlack
         searchTextField.delegate = self
         searchTextField.returnKeyType = .go
@@ -97,7 +97,7 @@ final class TrackersViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.calendar.firstWeekday = 2
-        datePicker.locale = .init(identifier: "Ru")
+        datePicker.locale = .current
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         view.addSubview(datePicker)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -119,7 +119,7 @@ final class TrackersViewController: UIViewController {
             placeholder.widthAnchor.constraint(equalToConstant: 80)
         ])
         
-        placeholderLabel.text = "Что будем отслеживать?"
+        placeholderLabel.text = "What will we track?".localized()
         placeholderLabel.font = .systemFont(ofSize: 12, weight: .medium)
         view.addSubview(placeholderLabel)
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -227,9 +227,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         cell.completedDays = completedTrackers.filter { $0.id == currentTracker.id}.count
-        let dayText = String.getDayAddition(int: cell.completedDays ?? 0)
-        
-        cell.day.text = "\(cell.completedDays ?? 0) \(dayText)"
+        cell.day.text = String.getDay(count: UInt(cell.completedDays ?? 0))
         return cell
     }
     

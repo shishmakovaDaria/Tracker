@@ -8,13 +8,24 @@
 import Foundation
 
 extension String {
-    static func getDayAddition(int: Int) -> String {
-        let preLastDigit = int % 100 / 10
-        if preLastDigit == 1 { return "дней" }
-        switch (int % 10) {
-        case 1: return "день"
-        case 2, 3, 4: return "дня"
-        default: return "дней"
-        }
+    func localized() -> String {
+        return NSLocalizedString(
+            self,
+            tableName: "Localizable",
+            bundle: .main,
+            value: self,
+            comment: self)
+    }
+    
+    static func getDay(count: UInt) -> String {
+        let formatString: String = NSLocalizedString(
+            "days count",
+            tableName: "LocalizableDict",
+            bundle: .main,
+            value: "day",
+            comment: "format to be found in Localized.stringsdict")
+        
+        let resultString = String.localizedStringWithFormat(formatString, count)
+        return resultString
     }
 }
