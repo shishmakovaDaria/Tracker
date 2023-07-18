@@ -20,6 +20,7 @@ final class TrackersViewController: UIViewController {
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
+    private let currentDate = Date()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -273,12 +274,12 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: - TrackersCellDelegate
 extension TrackersViewController: TrackersCellDelegate {
     func markTrackerAsDone(id: UUID, at indexPath: IndexPath) {
-        let date = Date()
-        if datePicker.date > date {
-            return
-        } else {
+        let currentDate = Date()
+        if Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date) || datePicker.date < currentDate  {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
             try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
+        } else {
+            return
         }
     }
     
