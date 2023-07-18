@@ -155,6 +155,18 @@ final class TrackerStore: NSObject {
         
         return currentTrackers
     }
+    
+    func deleteTracker(_ trackerId: UUID) throws {
+        let trackersFetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        guard let objects = try? context.fetch(trackersFetchRequest) else { return }
+        
+        for object in objects {
+            if object.id == trackerId {
+                context.delete(object)
+                try context.save()
+            }
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate

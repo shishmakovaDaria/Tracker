@@ -55,6 +55,7 @@ final class TrackersViewController: UIViewController {
     
     private func addCollectionView() {
         collectionView.backgroundColor = .ypWhite
+        collectionView.allowsMultipleSelection = false
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -184,6 +185,19 @@ final class TrackersViewController: UIViewController {
         }
     }
     
+    private func fixTracker(_ trackerId: UUID) {
+        // to do
+    }
+    
+    private func editTracker(_ trackerId: UUID) {
+        // to do
+    }
+    
+    private func deleteTracker(_ trackerId: UUID) {
+        try? trackerRecordStore.removeAllRecordsOfTracker(trackerId)
+        try? trackerStore.deleteTracker(trackerId)
+    }
+    
     @objc private func dateChanged() {
         reloadVisibleCategories()
     }
@@ -268,6 +282,36 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+    }
+}
+
+//MARK: - UICollectionViewDelegate
+extension TrackersViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+        let indexPath = indexPaths[0]
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackersCell else { return nil }
+        guard let trackerId = cell.trackerId else { return nil }
+        
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: "Закрепить") { [weak self] _ in
+                    self?.fixTracker(trackerId)
+                },
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    self?.editTracker(trackerId)
+                },
+                UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                    self?.deleteTracker(trackerId)
+                },
+            ])
+        })
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackersCell else { return nil }
+        return UITargetedPreview(view: cell.colorView)
     }
 }
 
