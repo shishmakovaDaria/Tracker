@@ -31,6 +31,8 @@ final class TrackersCell: UICollectionViewCell {
     let done = UIImageView()
     let pin = UIImageView()
     
+    private let analyticsService = AnalyticsService()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -121,6 +123,7 @@ final class TrackersCell: UICollectionViewCell {
     }
     
     @objc private func trackerButtonClicked(_ sender: Any?) {
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
         guard let trackerId = trackerId, let indexPath = indexPath else { return }
         if isCompletedToday {
             delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)

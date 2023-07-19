@@ -11,6 +11,7 @@ import UIKit
 final class TrackersNavigationContoller: UINavigationController {
     
     let controller = TrackersViewController()
+    private let analyticsService = AnalyticsService()
     
     override func viewDidLoad() {
         viewControllers = [controller]
@@ -35,6 +36,7 @@ final class TrackersNavigationContoller: UINavigationController {
     }
     
     @objc private func plusButtonDidTap(_ sender: Any?) {
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "add_track"])
         controller.showTrackersCreationViewController()
     }
 }

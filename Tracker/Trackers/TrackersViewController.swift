@@ -21,6 +21,7 @@ final class TrackersViewController: UIViewController {
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
+    private let analyticsService = AnalyticsService()
     private let currentDate = Date()
     private var trackerFiler = TrackerFilter.allTrackers
     
@@ -47,6 +48,12 @@ final class TrackersViewController: UIViewController {
         completedTrackers = trackerRecordStore.trackersRecords
         reloadVisibleCategories()
         reloadPlaceholder()
+        analyticsService.report(event: "open", params: ["screen": "Main"])
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        analyticsService.report(event: "close", params: ["screen": "Main"])
     }
     
     func showTrackersCreationViewController() {
@@ -150,6 +157,7 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func filterButtonDidTap(_ sender: Any?) {
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "filter"])
         let VC = FilterViewController()
         VC.delegate = self
         VC.currentFiler = trackerFiler
@@ -240,6 +248,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func editTracker(_ trackerId: UUID) {
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
         let VC = TrackerEditingViewController()
         VC.delegate = self
         let trackerToEdit = trackerStore.trackers.filter { tracker in
@@ -255,6 +264,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func deleteTracker(_ trackerId: UUID) {
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "delete"])
         let alert = UIAlertController(title: "Уверены, что хотите удалить трекер?",
                                       message: nil,
                                       preferredStyle: .actionSheet)
