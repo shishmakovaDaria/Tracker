@@ -185,6 +185,44 @@ final class TrackerStore: NSObject {
             }
         }
     }
+    
+    func currentCategory(_ trackerId: UUID) -> String {
+        let trackersFetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        guard let objects = try? context.fetch(trackersFetchRequest) else { return ""}
+        
+        var category: String?
+        
+        for object in objects {
+            if object.id == trackerId {
+                category = object.category?.header ?? ""
+            }
+        }
+        return category ?? ""
+    }
+    
+    func updateTracker(_ updatedTracker: Tracker, currentCategory: String) throws {
+        print("ЗДЕСЬ")
+        print(updatedTracker)
+        let trackersFetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        guard let objects = try? context.fetch(trackersFetchRequest) else { return }
+        
+        for object in objects {
+            if object.id == updatedTracker.id {
+                object.setValue(updatedTracker.name, forKey: "name")
+                object.setValue(updatedTracker.emogi, forKey: "emoji")
+                object.setValue(uiColorMarshalling.hexString(from: updatedTracker.color), forKey: "colorHex")
+                object.setValue(weekDayMarshalling.makeString(scheduleSet: updatedTracker.schedule), forKey: "scheduleString")
+                if object.category?.header != currentCategory {
+                    let categoriesFetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+                    categoriesFetchRequest.predicate = NSPredicate(format: "header = '\(currentCategory)'")
+                    let categories = try context.fetch(categoriesFetchRequest)
+                    object.setValue(categories.first, forKey: "category")
+                }
+                
+                try context.save()
+            }
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate

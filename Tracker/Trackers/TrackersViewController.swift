@@ -214,7 +214,18 @@ final class TrackersViewController: UIViewController {
     }
     
     private func editTracker(_ trackerId: UUID) {
-        // to do
+        let VC = TrackerEditingViewController()
+        VC.delegate = self
+        let trackerToEdit = trackerStore.trackers.filter { tracker in
+            return tracker.id == trackerId
+        }
+        VC.trackerToEdit = trackerToEdit[0]
+        VC.category = trackerStore.currentCategory(trackerId)
+        let trackerRecord = completedTrackers.filter { record in
+            return record.id == trackerId
+        }
+        VC.trackerRecord = trackerRecord.count
+        present(VC, animated: true)
     }
     
     private func deleteTracker(_ trackerId: UUID) {
@@ -371,6 +382,13 @@ extension TrackersViewController: TrackersCellDelegate {
 extension TrackersViewController: CreationViewControllerDelegate {
     func addNewTracker(tracker: Tracker, header: String) {
         try! trackerStore.addNewTracker(tracker, currentCategory: header)
+    }
+}
+
+//MARK: - EditingViewControllerDelegate
+extension TrackersViewController: EditingViewControllerDelegate {
+    func updateTracker(tracker: Tracker, header: String) {
+        try? trackerStore.updateTracker(tracker, currentCategory: header)
     }
 }
 
