@@ -229,8 +229,24 @@ final class TrackersViewController: UIViewController {
     }
     
     private func deleteTracker(_ trackerId: UUID) {
-        try? trackerRecordStore.removeAllRecordsOfTracker(trackerId)
-        try? trackerStore.deleteTracker(trackerId)
+        let alert = UIAlertController(title: "Уверены, что хотите удалить трекер?",
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        
+        let action1 = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            try? self.trackerRecordStore.removeAllRecordsOfTracker(trackerId)
+            try? self.trackerStore.deleteTracker(trackerId)
+        }
+        
+        let action2 = UIAlertAction(title: "Отменить", style: .cancel) {_ in
+            alert.dismiss(animated: true)
+        }
+        
+        alert.addAction(action1)
+        alert.addAction(action2)
+
+        self.present(alert, animated: true)
     }
     
     @objc private func dateChanged() {
