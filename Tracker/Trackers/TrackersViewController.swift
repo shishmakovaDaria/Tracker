@@ -22,6 +22,7 @@ final class TrackersViewController: UIViewController {
     private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
     private let currentDate = Date()
+    private var trackerFiler = TrackerFilter.allTrackers
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,6 +137,7 @@ final class TrackersViewController: UIViewController {
         filterButton.setTitle("Filters".localized(), for: .normal)
         filterButton.backgroundColor = .ypBlue
         filterButton.layer.cornerRadius = 16
+        filterButton.addTarget(self, action: #selector(filterButtonDidTap(_:)), for: .touchUpInside)
         view.addSubview(filterButton)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -145,6 +147,13 @@ final class TrackersViewController: UIViewController {
             filterButton.heightAnchor.constraint(equalToConstant: 50),
             filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
+    }
+    
+    @objc private func filterButtonDidTap(_ sender: Any?) {
+        let VC = FilterViewController()
+        VC.delegate = self
+        VC.currentFiler = trackerFiler
+        present(VC, animated: true)
     }
     
     private func reloadPlaceholder() {
@@ -458,5 +467,58 @@ extension TrackersViewController: UITextFieldDelegate {
         reloadVisibleCategories()
         
         return true
+    }
+}
+
+//MARK: - FilterViewControllerDelegate
+extension TrackersViewController: FilterViewControllerDelegate {
+    func filterCategories(newFilter: TrackerFilter) {
+        trackerFiler = newFilter
+        
+        switch newFilter {
+        case .allTrackers:
+            visibleCategories = categories
+            reloadVisibleCategories()
+        case .trackersForToday:
+            datePicker.date = Date()
+            visibleCategories = categories
+            reloadVisibleCategories()
+        case .done:
+            visibleCategories = categories.compactMap { category in
+                let trackers = category.trackers.filter { tracker in
+                    let condition = isTrackerCompletedToday(id: tracker.id) == true
+                    
+                    return condition
+                }
+                
+                if trackers.isEmpty {
+                    return nil
+                }
+                
+                return TrackerCategory(
+                    header: category.header,
+                    trackers: trackers
+                )
+            }
+        case .notDone:
+            visibleCategories = categories.compactMap { category in
+                let trackers = category.trackers.filter { tracker in
+                    let condition = isTrackerCompletedToday(id: tracker.id) == false
+                    
+                    return condition
+                }
+                
+                if trackers.isEmpty {
+                    return nil
+                }
+                
+                return TrackerCategory(
+                    header: category.header,
+                    trackers: trackers
+                )
+            }
+        }
+        collectionView.reloadData()
+        reloadPlaceholder()
     }
 }
