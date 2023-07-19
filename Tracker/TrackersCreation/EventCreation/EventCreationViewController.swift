@@ -235,7 +235,7 @@ final class EventCreationViewController: UIViewController {
             id: UUID(),
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
-            emogi: emoji ?? "",
+            emoji: emoji ?? "",
             pinned: false,
             schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
         delegate?.addNewTracker(tracker: newTracker, header: category ?? "")

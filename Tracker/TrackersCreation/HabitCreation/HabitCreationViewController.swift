@@ -238,7 +238,7 @@ final class HabitCreationViewController: UIViewController {
             id: UUID(),
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
-            emogi: emoji ?? "",
+            emoji: emoji ?? "",
             pinned: false,
             schedule: schedule)
         delegate?.addNewTracker(tracker: newTracker, header: category ?? "")

@@ -41,7 +41,7 @@ final class TrackerEditingViewController: UIViewController {
         view.backgroundColor = .ypWhite
         newTrackersName = trackerToEdit?.name
         schedule = trackerToEdit?.schedule ?? Set()
-        emoji = trackerToEdit?.emogi
+        emoji = trackerToEdit?.emoji
         color = trackerToEdit?.color
         configureView()
         tableView.dataSource = self
@@ -257,7 +257,7 @@ final class TrackerEditingViewController: UIViewController {
             id: trackerToEdit?.id ?? UUID(),
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
-            emogi: emoji ?? "",
+            emoji: emoji ?? "",
             pinned: trackerToEdit?.pinned ?? false,
             schedule: schedule)
         delegate?.updateTracker(tracker: updatedTracker, header: category ?? "")

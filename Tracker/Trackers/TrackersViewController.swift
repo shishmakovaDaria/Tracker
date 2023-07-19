@@ -14,6 +14,7 @@ final class TrackersViewController: UIViewController {
     private let placeholderLabel = UILabel()
     private let datePicker = UIDatePicker()
     private let searchTextField = UISearchTextField()
+    private let filterButton = UIButton()
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -106,7 +107,8 @@ final class TrackersViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            datePicker.centerYAnchor.constraint(equalTo: label.centerYAnchor)
+            datePicker.centerYAnchor.constraint(equalTo: label.centerYAnchor),
+            datePicker.widthAnchor.constraint(equalToConstant: 100)
         ])
         
         placeholder.image = UIImage(named: "Star")
@@ -130,6 +132,19 @@ final class TrackersViewController: UIViewController {
             placeholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             placeholderLabel.topAnchor.constraint(equalTo: placeholder.bottomAnchor, constant: 8)
         ])
+        
+        filterButton.setTitle("Filters".localized(), for: .normal)
+        filterButton.backgroundColor = .ypBlue
+        filterButton.layer.cornerRadius = 16
+        view.addSubview(filterButton)
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
+        ])
     }
     
     private func reloadPlaceholder() {
@@ -137,6 +152,8 @@ final class TrackersViewController: UIViewController {
         placeholder.isHidden = !visibleCategories.isEmpty
         placeholderLabel.isHidden = !categories.isEmpty
         placeholderLabel.isHidden = !visibleCategories.isEmpty
+        filterButton.isHidden = categories.isEmpty
+        filterButton.isHidden = visibleCategories.isEmpty
     }
     
     private func reloadVisibleCategories() {
@@ -276,7 +293,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         cell.delegate = self
         cell.colorView.backgroundColor = currentTracker.color
-        cell.emoji.text = currentTracker.emogi
+        cell.emoji.text = currentTracker.emoji
         cell.trackerName.text = currentTracker.name
         cell.trackerId = currentTracker.id
         cell.indexPath = indexPath
@@ -410,7 +427,7 @@ extension TrackersViewController: EditingViewControllerDelegate {
 
 //MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
-    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+    func store(_ store: TrackerStore) {
         categories = updateCategoriesFromStore()
         visibleCategories = categories
         collectionView.reloadData()

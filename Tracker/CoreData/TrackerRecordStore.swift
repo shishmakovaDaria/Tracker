@@ -102,8 +102,7 @@ final class TrackerRecordStore: NSObject {
     }
     
     func removeAllRecordsOfTracker(_ trackerId: UUID) throws {
-        let recordsFetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-        guard let records = try? context.fetch(recordsFetchRequest) else { return }
+        guard let records = fetchedResultsController.fetchedObjects else { return }
         
         for record in records {
             if record.id == trackerId {
@@ -114,8 +113,7 @@ final class TrackerRecordStore: NSObject {
     }
     
     func removeAllRecords() throws {
-        let recordsFetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-        guard let records = try? context.fetch(recordsFetchRequest) else { return }
+        guard let records = fetchedResultsController.fetchedObjects else { return }
         
         for record in records {
             context.delete(record)
