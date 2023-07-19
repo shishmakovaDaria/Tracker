@@ -19,6 +19,7 @@
 		613465A72A3E3CA3008A31F9 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613465A62A3E3CA3008A31F9 /* TrackerCategoryStore.swift */; };
 		6135B9822A675D1000D393A3 /* TrackerEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6135B9812A675D1000D393A3 /* TrackerEditingViewController.swift */; };
 		6135B9842A67C82500D393A3 /* EditingViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6135B9832A67C82500D393A3 /* EditingViewControllerDelegate.swift */; };
+		6135B9862A68278C00D393A3 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6135B9852A68278C00D393A3 /* UIImage.swift */; };
 		613A87B72A0EC0170077D517 /* TrackersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613A87B62A0EC0170077D517 /* TrackersCell.swift */; };
 		613B25BC2A2A369B00DB355F /* HabitCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613B25BB2A2A369B00DB355F /* HabitCreationViewController.swift */; };
 		613B25BE2A2A3E8B00DB355F /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613B25BD2A2A3E8B00DB355F /* CustomTextField.swift */; };
@@ -73,6 +74,7 @@
 		613465A62A3E3CA3008A31F9 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		6135B9812A675D1000D393A3 /* TrackerEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerEditingViewController.swift; sourceTree = "<group>"; };
 		6135B9832A67C82500D393A3 /* EditingViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingViewControllerDelegate.swift; sourceTree = "<group>"; };
+		6135B9852A68278C00D393A3 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		613A87B62A0EC0170077D517 /* TrackersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCell.swift; sourceTree = "<group>"; };
 		613B25BB2A2A369B00DB355F /* HabitCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCreationViewController.swift; sourceTree = "<group>"; };
 		613B25BD2A2A3E8B00DB355F /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				61F2D5822A0C32C4005C5386 /* UIColor.swift */,
+				6135B9852A68278C00D393A3 /* UIImage.swift */,
 				613B25BD2A2A3E8B00DB355F /* CustomTextField.swift */,
 				61CEBD602A314F6D0029D582 /* String.swift */,
 			);
@@ -438,6 +441,7 @@
 				61F2D5832A0C32C4005C5386 /* UIColor.swift in Sources */,
 				61847E672A59F34400425F7A /* CategoryViewModel.swift in Sources */,
 				61DC94EB2A1D50FE0012B292 /* TrackersNavigationContoller.swift in Sources */,
+				6135B9862A68278C00D393A3 /* UIImage.swift in Sources */,
 				61B76AEC2A292A2F00A98644 /* TrackersCreationViewController.swift in Sources */,
 				613B25BC2A2A369B00DB355F /* HabitCreationViewController.swift in Sources */,
 			);
