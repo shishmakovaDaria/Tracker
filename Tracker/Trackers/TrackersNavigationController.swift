@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class TrackersNavigationContoller: UINavigationController {
+final class TrackersNavigationController: UINavigationController {
     
     let controller = TrackersViewController()
     private let analyticsService = AnalyticsService()
@@ -36,7 +36,7 @@ final class TrackersNavigationContoller: UINavigationController {
     }
     
     @objc private func plusButtonDidTap(_ sender: Any?) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "add_track"])
+        analyticsService.didTapAddTrackerOnMain()
         controller.showTrackersCreationViewController()
     }
 }

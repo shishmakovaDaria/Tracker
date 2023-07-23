@@ -7,10 +7,11 @@
 
 import UIKit
 import CoreData
-import YandexMobileMetrica
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    private let analyticsService = AnalyticsService()
     
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Store")
@@ -23,11 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        guard let configuration = YMMYandexMetricaConfiguration(apiKey: "3452aed3-8572-4c17-ac93-2718cd98baa8") else {
-            return true
-        }
-            
-        YMMYandexMetrica.activate(with: configuration)
+        analyticsService.activate()
+        
         return true
     }
 }

@@ -356,15 +356,15 @@ extension HabitCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            let VC = CategoryViewController()
-            VC.delegate = self
-            VC.modalTransitionStyle = .flipHorizontal
-            present(VC, animated: true)
+            let vc = CategoryViewController()
+            vc.delegate = self
+            vc.modalTransitionStyle = .flipHorizontal
+            present(vc, animated: true)
         } else {
-            let VC = ScheduleViewController()
-            VC.delegate = self
-            VC.modalTransitionStyle = .flipHorizontal
-            present(VC, animated: true)
+            let vc = ScheduleViewController()
+            vc.delegate = self
+            vc.modalTransitionStyle = .flipHorizontal
+            present(vc, animated: true)
         }
     }
 }

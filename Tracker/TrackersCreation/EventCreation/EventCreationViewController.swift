@@ -347,10 +347,10 @@ extension EventCreationViewController: UITableViewDataSource {
 extension EventCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let VC = CategoryViewController()
-        VC.delegate = self
-        VC.modalTransitionStyle = .flipHorizontal
-        present(VC, animated: true)
+        let vc = CategoryViewController()
+        vc.delegate = self
+        vc.modalTransitionStyle = .flipHorizontal
+        present(vc, animated: true)
     }
 }
 

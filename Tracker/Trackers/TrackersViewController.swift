@@ -25,6 +25,11 @@ final class TrackersViewController: UIViewController {
     private let currentDate = Date()
     private var trackerFiler = TrackerFilter.allTrackers
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        analyticsService.mainIsOpened()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -48,18 +53,17 @@ final class TrackersViewController: UIViewController {
         completedTrackers = trackerRecordStore.trackersRecords
         reloadVisibleCategories()
         reloadPlaceholder()
-        analyticsService.report(event: "open", params: ["screen": "Main"])
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        analyticsService.report(event: "close", params: ["screen": "Main"])
+        analyticsService.mainIsClosed()
     }
     
     func showTrackersCreationViewController() {
-        let VC = TrackersCreationViewController()
-        VC.controller = self
-        present(VC, animated: true)
+        let vc = TrackersCreationViewController()
+        vc.controller = self
+        present(vc, animated: true)
     }
     
     private func addCollectionView() {
@@ -157,11 +161,11 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func filterButtonDidTap(_ sender: Any?) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "filter"])
-        let VC = FilterViewController()
-        VC.delegate = self
-        VC.currentFiler = trackerFiler
-        present(VC, animated: true)
+        analyticsService.didTapFilterOnMain()
+        let vc = FilterViewController()
+        vc.delegate = self
+        vc.currentFiler = trackerFiler
+        present(vc, animated: true)
     }
     
     private func reloadPlaceholder() {
@@ -248,23 +252,23 @@ final class TrackersViewController: UIViewController {
     }
     
     private func editTracker(_ trackerId: UUID) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
-        let VC = TrackerEditingViewController()
-        VC.delegate = self
+        analyticsService.didTapEditOnMain()
+        let vc = TrackerEditingViewController()
+        vc.delegate = self
         let trackerToEdit = trackerStore.trackers.filter { tracker in
             return tracker.id == trackerId
         }
-        VC.trackerToEdit = trackerToEdit[0]
-        VC.category = trackerStore.currentCategory(trackerId)
+        vc.trackerToEdit = trackerToEdit[0]
+        vc.category = trackerStore.currentCategory(trackerId)
         let trackerRecord = completedTrackers.filter { record in
             return record.id == trackerId
         }
-        VC.trackerRecord = trackerRecord.count
-        present(VC, animated: true)
+        vc.trackerRecord = trackerRecord.count
+        present(vc, animated: true)
     }
     
     private func deleteTracker(_ trackerId: UUID) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "delete"])
+        analyticsService.didTapDeleteOnMain()
         let alert = UIAlertController(title: "Уверены, что хотите удалить трекер?",
                                       message: nil,
                                       preferredStyle: .actionSheet)

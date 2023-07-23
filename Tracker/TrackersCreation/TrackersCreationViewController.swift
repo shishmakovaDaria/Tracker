@@ -67,14 +67,14 @@ final class TrackersCreationViewController: UIViewController {
     }
     
     @objc private func habitButtonDidTap(_ sender: Any?) {
-        let VC = HabitCreationViewController()
-        VC.delegate = self.controller
-        present(VC, animated: true)
+        let vc = HabitCreationViewController()
+        vc.delegate = self.controller
+        present(vc, animated: true)
     }
     
     @objc private func eventButtonDidTap(_ sender: Any?) {
-        let VC = EventCreationViewController()
-        VC.delegate = self.controller
-        present(VC, animated: true)
+        let vc = EventCreationViewController()
+        vc.delegate = self.controller
+        present(vc, animated: true)
     }
 }
