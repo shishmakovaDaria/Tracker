@@ -13,7 +13,7 @@ protocol CategoryViewControllerDelegate: AnyObject {
 }
 
 final class CategoryViewController: UIViewController {
-    private var viewModel: CategoryViewModel?
+    var viewModel: CategoryViewModel?
     private let tableView = UITableView()
     private let placeholder = UIImageView()
     private let placeholderLabel = UILabel()
@@ -28,7 +28,6 @@ final class CategoryViewController: UIViewController {
         tableView.delegate = self
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         
-        viewModel = CategoryViewModel()
         viewModel?.$categories.bind { [weak self] _ in
             self?.updateTableView()
         }
@@ -148,8 +147,12 @@ extension CategoryViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
         
-        cell.header.text = viewModel?.currentCategory(at: indexPath)
-        cell.accessoryType = .none
+        cell.header.text = viewModel?.categoryAtIndexPath(at: indexPath)
+        if cell.header.text == viewModel?.currentCategory {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         
         if indexPath.row == (viewModel?.categories.count ?? 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
@@ -166,7 +169,7 @@ extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        let chosenCategory = viewModel?.currentCategory(at: indexPath)
+        let chosenCategory = viewModel?.categoryAtIndexPath(at: indexPath)
         delegate?.addCategory(chosenCategory: chosenCategory ?? "")
         dismiss(animated: true)
     }

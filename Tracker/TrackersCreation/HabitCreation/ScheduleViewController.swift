@@ -16,7 +16,7 @@ final class ScheduleViewController: UIViewController {
     
     private let tableView = UITableView()
     private let days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    private var schedule = Set<WeekDay>()
+    var schedule = Set<WeekDay>()
     var delegate: ScheduleViewControllerDelegate?
     
     override func viewDidLoad() {
@@ -155,6 +155,39 @@ extension ScheduleViewController: UITableViewDataSource {
         toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         toggle.onTintColor = .ypBlue
         cell.accessoryView = toggle
+        
+        for day in schedule {
+            switch day {
+            case .monday:
+                if indexPath.row == 0 {
+                    toggle.isOn = true
+                }
+            case .tuesday:
+                if indexPath.row == 1 {
+                    toggle.isOn = true
+                }
+            case .wednesday:
+                if indexPath.row == 2 {
+                    toggle.isOn = true
+                }
+            case .thursday:
+                if indexPath.row == 3 {
+                    toggle.isOn = true
+                }
+            case .friday:
+                if indexPath.row == 4 {
+                    toggle.isOn = true
+                }
+            case .saturday:
+                if indexPath.row == 5 {
+                    toggle.isOn = true
+                }
+            case .sunday:
+                if indexPath.row == 6 {
+                    toggle.isOn = true
+                }
+            }
+        }
         
         if indexPath.row == days.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)

@@ -357,11 +357,14 @@ extension HabitCreationViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let vc = CategoryViewController()
+            vc.viewModel = CategoryViewModel()
+            vc.viewModel?.currentCategory = category ?? ""
             vc.delegate = self
             vc.modalTransitionStyle = .flipHorizontal
             present(vc, animated: true)
         } else {
             let vc = ScheduleViewController()
+            vc.schedule = schedule
             vc.delegate = self
             vc.modalTransitionStyle = .flipHorizontal
             present(vc, animated: true)

@@ -75,7 +75,14 @@ enum WeekDay: String {
             scheduleRawArray.append(day.rawValue)
         }
         
-        let scheduleString = scheduleRawArray.joined(separator: ", ")
+        var scheduleString = ""
+        
+        if scheduleRawArray.count == 7 {
+            scheduleString = "Каждый день"
+        } else {
+            scheduleString = scheduleRawArray.joined(separator: ", ")
+        }
+        
         return scheduleString
     }
 }

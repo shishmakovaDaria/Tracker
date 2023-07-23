@@ -13,6 +13,7 @@ final class CategoryViewModel {
     @Observable
     private(set) var categories: [String] = []
     private let trackerCategoryStore: TrackerCategoryStore
+    var currentCategory = ""
     
     convenience init() {
         self.init(trackerCategoryStore: TrackerCategoryStore())
@@ -24,7 +25,7 @@ final class CategoryViewModel {
         categories = trackerCategoryStore.categories
     }
     
-    func currentCategory(at indexPath: IndexPath) -> String {
+    func categoryAtIndexPath(at indexPath: IndexPath) -> String {
         return categories[indexPath.row]
     }
 }
