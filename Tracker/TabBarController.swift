@@ -12,29 +12,29 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let trackersNavigationContoller = TrackersNavigationContoller()
-        trackersNavigationContoller.tabBarItem = UITabBarItem(title: "Трекеры",
+        let trackersNavigationController = TrackersNavigationController()
+        trackersNavigationController.tabBarItem = UITabBarItem(title: "Trackers".localized(),
                                                          image: UIImage(systemName: "record.circle.fill"),
                                                          selectedImage: nil)
         
         let statisticsViewController = StatisticsViewController()
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика",
+        statisticsViewController.tabBarItem = UITabBarItem(title: "Statistics".localized(),
                                                            image: UIImage(systemName: "hare.fill"),
                                                            selectedImage: nil)
         
-        self.viewControllers = [trackersNavigationContoller, statisticsViewController]
-        self.tabBar.backgroundColor = .white
+        self.viewControllers = [trackersNavigationController, statisticsViewController]
+        self.tabBar.backgroundColor = .ypWhite
         
-        let grayView = UIView()
-        grayView.backgroundColor = .ypGray
-        view.addSubview(grayView)
-        grayView.translatesAutoresizingMaskIntoConstraints = false
+        let separator = UIView()
+        separator.backgroundColor = .separatorColor
+        view.addSubview(separator)
+        separator.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            grayView.heightAnchor.constraint(equalToConstant: 1),
-            grayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            grayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            grayView.topAnchor.constraint(equalTo: self.tabBar.topAnchor, constant: -1)
+            separator.heightAnchor.constraint(equalToConstant: 1),
+            separator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            separator.topAnchor.constraint(equalTo: self.tabBar.topAnchor, constant: -1)
         ])
     }
 }

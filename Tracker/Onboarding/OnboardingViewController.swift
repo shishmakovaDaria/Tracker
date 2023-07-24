@@ -11,11 +11,11 @@ import UIKit
 final class OnboardingViewController: UIPageViewController {
     lazy var pages: [UIViewController] = {
         let page1 = OnboardingPageViewController()
-        page1.label.text = "Отслеживайте только то, что хотите"
+        page1.label.text = "Track only what you want".localized()
         page1.setBackgroundImage(image: UIImage(named: "Onboarding1") ?? UIImage())
         
         let page2 = OnboardingPageViewController()
-        page2.label.text = "Даже если это не литры воды и йога"
+        page2.label.text = "Even if it's not liters of water and yoga".localized()
         page2.setBackgroundImage(image: UIImage(named: "Onboarding2") ?? UIImage())
         
         return [page1, page2]
@@ -59,7 +59,7 @@ final class OnboardingViewController: UIPageViewController {
     private func setUpButton() {
         let button = UIButton()
         button.backgroundColor = .ypBlack
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle("What a technology!".localized(), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(buttonDidTap(_:)), for: .touchUpInside)

@@ -62,4 +62,27 @@ enum WeekDay: String {
     static func <(lhs: WeekDay, rhs: WeekDay) -> Bool {
         lhs.sortOrder < rhs.sortOrder
     }
+    
+    func makeString(_ schedule: Set<WeekDay>) -> String {
+        var scheduleArray = [WeekDay]()
+        for day in schedule {
+            scheduleArray.append(day)
+        }
+        scheduleArray.sort{$0<$1}
+        
+        var scheduleRawArray = [String]()
+        for day in scheduleArray {
+            scheduleRawArray.append(day.rawValue)
+        }
+        
+        var scheduleString = ""
+        
+        if scheduleRawArray.count == 7 {
+            scheduleString = "Каждый день"
+        } else {
+            scheduleString = scheduleRawArray.joined(separator: ", ")
+        }
+        
+        return scheduleString
+    }
 }

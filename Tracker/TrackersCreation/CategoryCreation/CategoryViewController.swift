@@ -13,7 +13,7 @@ protocol CategoryViewControllerDelegate: AnyObject {
 }
 
 final class CategoryViewController: UIViewController {
-    private var viewModel: CategoryViewModel?
+    var viewModel: CategoryViewModel?
     private let tableView = UITableView()
     private let placeholder = UIImageView()
     private let placeholderLabel = UILabel()
@@ -22,13 +22,12 @@ final class CategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: CustomTableViewCell.identifier)
         
-        viewModel = CategoryViewModel()
         viewModel?.$categories.bind { [weak self] _ in
             self?.updateTableView()
         }
@@ -61,6 +60,7 @@ final class CategoryViewController: UIViewController {
         let addButton = UIButton()
         addButton.backgroundColor = .ypBlack
         addButton.setTitle("Добавить категорию", for: .normal)
+        addButton.setTitleColor(.ypWhite, for: .normal)
         addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         addButton.layer.cornerRadius = 16
         addButton.addTarget(self, action: #selector(addButtonDidTap(_:)), for: .touchUpInside)
@@ -76,6 +76,7 @@ final class CategoryViewController: UIViewController {
         
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -146,8 +147,12 @@ extension CategoryViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
         
-        cell.header.text = viewModel?.currentCategory(at: indexPath)
-        cell.accessoryType = .none
+        cell.header.text = viewModel?.categoryAtIndexPath(at: indexPath)
+        if cell.header.text == viewModel?.currentCategory {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         
         if indexPath.row == (viewModel?.categories.count ?? 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
@@ -164,8 +169,41 @@ extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        let chosenCategory = viewModel?.currentCategory(at: indexPath)
+        let chosenCategory = viewModel?.categoryAtIndexPath(at: indexPath)
         delegate?.addCategory(chosenCategory: chosenCategory ?? "")
         dismiss(animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let categoryToEditOrDelete = viewModel?.categoryAtIndexPath(at: indexPath)
+        
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    let vc = EditCategoryViewController()
+                    vc.category = categoryToEditOrDelete
+                    self?.present(vc, animated: true)
+                },
+                UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                    let alert = UIAlertController(title: "Эта категория точно не нужна?",
+                                                  message: nil,
+                                                  preferredStyle: .actionSheet)
+                    
+                    let action1 = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.viewModel?.deleteCategory(categoryToDelete: categoryToEditOrDelete ?? "")
+                    }
+                    
+                    let action2 = UIAlertAction(title: "Отменить", style: .cancel) {_ in
+                        alert.dismiss(animated: true)
+                    }
+                    
+                    alert.addAction(action1)
+                    alert.addAction(action2)
+
+                    self?.present(alert, animated: true)
+                },
+            ])
+        })
     }
 }

@@ -8,9 +8,10 @@
 import Foundation
 import UIKit
 
-final class TrackersNavigationContoller: UINavigationController {
+final class TrackersNavigationController: UINavigationController {
     
     let controller = TrackersViewController()
+    private let analyticsService = AnalyticsService()
     
     override func viewDidLoad() {
         viewControllers = [controller]
@@ -35,6 +36,7 @@ final class TrackersNavigationContoller: UINavigationController {
     }
     
     @objc private func plusButtonDidTap(_ sender: Any?) {
+        analyticsService.didTapAddTrackerOnMain()
         controller.showTrackersCreationViewController()
     }
 }

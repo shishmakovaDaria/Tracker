@@ -100,6 +100,26 @@ final class TrackerRecordStore: NSObject {
         context.delete(recordInCoreData)
         try context.save()
     }
+    
+    func removeAllRecordsOfTracker(_ trackerId: UUID) throws {
+        guard let records = fetchedResultsController.fetchedObjects else { return }
+        
+        for record in records {
+            if record.id == trackerId {
+                context.delete(record)
+                try context.save()
+            }
+        }
+    }
+    
+    func removeAllRecords() throws {
+        guard let records = fetchedResultsController.fetchedObjects else { return }
+        
+        for record in records {
+            context.delete(record)
+            try context.save()
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate

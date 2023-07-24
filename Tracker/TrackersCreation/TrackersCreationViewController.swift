@@ -14,7 +14,7 @@ final class TrackersCreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
     }
     
@@ -34,6 +34,7 @@ final class TrackersCreationViewController: UIViewController {
         let habitButton = UIButton()
         habitButton.backgroundColor = .ypBlack
         habitButton.setTitle("Привычка", for: .normal)
+        habitButton.setTitleColor(.ypWhite, for: .normal)
         habitButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         habitButton.layer.cornerRadius = 16
         habitButton.addTarget(self, action: #selector(habitButtonDidTap(_:)), for: .touchUpInside)
@@ -50,6 +51,7 @@ final class TrackersCreationViewController: UIViewController {
         let eventButton = UIButton()
         eventButton.backgroundColor = .ypBlack
         eventButton.setTitle("Нерегулярное событие", for: .normal)
+        eventButton.setTitleColor(.ypWhite, for: .normal)
         eventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         eventButton.layer.cornerRadius = 16
         eventButton.addTarget(self, action: #selector(eventButtonDidTap(_:)), for: .touchUpInside)
@@ -65,14 +67,14 @@ final class TrackersCreationViewController: UIViewController {
     }
     
     @objc private func habitButtonDidTap(_ sender: Any?) {
-        let VC = HabitCreationViewController()
-        VC.delegate = self.controller
-        present(VC, animated: true)
+        let vc = HabitCreationViewController()
+        vc.delegate = self.controller
+        present(vc, animated: true)
     }
     
     @objc private func eventButtonDidTap(_ sender: Any?) {
-        let VC = EventCreationViewController()
-        VC.delegate = self.controller
-        present(VC, animated: true)
+        let vc = EventCreationViewController()
+        vc.delegate = self.controller
+        present(vc, animated: true)
     }
 }

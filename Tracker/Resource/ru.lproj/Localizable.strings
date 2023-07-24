@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Дарья Шишмакова on 18.07.2023.
+  
+*/
+"Trackers" = "Трекеры";
+"What will we track?" = "Что будем отслеживать?";
+"Statistics" = "Статистика";
+"Search" = "Поиск";
+"What a technology!" = "Вот это технологии!";
+"Track only what you want" = "Отслеживайте только то, что хотите";
+"Even if it's not liters of water and yoga" = "Даже если это не литры воды и йога";
+"Nothing to analyze yet" = "Анализировать пока нечего";
+"Filters" = "Фильтры";

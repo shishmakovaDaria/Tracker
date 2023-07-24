@@ -35,7 +35,7 @@ final class HabitCreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -77,7 +77,7 @@ final class HabitCreationViewController: UIViewController {
         trackersName.placeholder = "Введите название трекера"
         trackersName.textColor = .ypBlack
         trackersName.font = .systemFont(ofSize: 17)
-        trackersName.backgroundColor = .backgroundDay
+        trackersName.backgroundColor = .background
         trackersName.layer.cornerRadius = 16
         trackersName.clearButtonMode = .whileEditing
         trackersName.returnKeyType = .go
@@ -109,6 +109,7 @@ final class HabitCreationViewController: UIViewController {
         
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         scrollView.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -142,6 +143,7 @@ final class HabitCreationViewController: UIViewController {
             emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32)
         ])
         
+        emojiCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(emojiCollectionView)
         emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -164,6 +166,7 @@ final class HabitCreationViewController: UIViewController {
             colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 40)
         ])
         
+        colorCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(colorCollectionView)
         colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -235,7 +238,8 @@ final class HabitCreationViewController: UIViewController {
             id: UUID(),
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
-            emogi: emoji ?? "",
+            emoji: emoji ?? "",
+            pinned: false,
             schedule: schedule)
         delegate?.addNewTracker(tracker: newTracker, header: category ?? "")
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -352,15 +356,18 @@ extension HabitCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            let VC = CategoryViewController()
-            VC.delegate = self
-            VC.modalTransitionStyle = .flipHorizontal
-            present(VC, animated: true)
+            let vc = CategoryViewController()
+            vc.viewModel = CategoryViewModel()
+            vc.viewModel?.currentCategory = category ?? ""
+            vc.delegate = self
+            vc.modalTransitionStyle = .flipHorizontal
+            present(vc, animated: true)
         } else {
-            let VC = ScheduleViewController()
-            VC.delegate = self
-            VC.modalTransitionStyle = .flipHorizontal
-            present(VC, animated: true)
+            let vc = ScheduleViewController()
+            vc.schedule = schedule
+            vc.delegate = self
+            vc.modalTransitionStyle = .flipHorizontal
+            present(vc, animated: true)
         }
     }
 }
@@ -394,19 +401,7 @@ extension HabitCreationViewController: CategoryViewControllerDelegate {
 extension HabitCreationViewController: ScheduleViewControllerDelegate {
     func addSchedule(chosenSchedule: Set<WeekDay>) {
         self.schedule = chosenSchedule
-        
-        var scheduleArray = [WeekDay]()
-        for day in chosenSchedule {
-            scheduleArray.append(day)
-        }
-        scheduleArray.sort{$0<$1}
-        
-        var scheduleRawArray = [String]()
-        for day in scheduleArray {
-            scheduleRawArray.append(day.rawValue)
-        }
-        
-        let scheduleString = scheduleRawArray.joined(separator: ", ")
+        let scheduleString = WeekDay.monday.makeString(chosenSchedule)
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CustomTableViewCell else { return }
         cell.addSecondLabel(chosen: scheduleString)

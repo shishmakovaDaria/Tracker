@@ -33,7 +33,7 @@ final class ColorCell: UICollectionViewCell {
         backgroundColorView.frame = colorView.frame.insetBy(dx: -6, dy: -6)
         backgroundColorView.layer.cornerRadius = 8
         backgroundColorView.layer.borderWidth = 3
-        backgroundColorView.layer.borderColor = UIColor.white.cgColor
+        backgroundColorView.layer.borderColor = UIColor.ypWhite.cgColor
         contentView.addSubview(backgroundColorView)
         backgroundColorView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -47,5 +47,10 @@ final class ColorCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        backgroundColorView.layer.borderColor = UIColor.ypWhite.cgColor
     }
 }

@@ -33,7 +33,7 @@ final class EventCreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -75,7 +75,7 @@ final class EventCreationViewController: UIViewController {
         trackersName.placeholder = "Введите название трекера"
         trackersName.textColor = .ypBlack
         trackersName.font = .systemFont(ofSize: 17)
-        trackersName.backgroundColor = .backgroundDay
+        trackersName.backgroundColor = .background
         trackersName.layer.cornerRadius = 16
         trackersName.clearButtonMode = .whileEditing
         trackersName.returnKeyType = .go
@@ -141,6 +141,7 @@ final class EventCreationViewController: UIViewController {
             emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32)
         ])
         
+        emojiCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(emojiCollectionView)
         emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -163,6 +164,7 @@ final class EventCreationViewController: UIViewController {
             colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 40)
         ])
         
+        colorCollectionView.backgroundColor = .ypWhite
         scrollView.addSubview(colorCollectionView)
         colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -233,7 +235,8 @@ final class EventCreationViewController: UIViewController {
             id: UUID(),
             name: newTrackersName ?? "",
             color: color ?? UIColor(),
-            emogi: emoji ?? "",
+            emoji: emoji ?? "",
+            pinned: false,
             schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
         delegate?.addNewTracker(tracker: newTracker, header: category ?? "")
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -344,10 +347,12 @@ extension EventCreationViewController: UITableViewDataSource {
 extension EventCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let VC = CategoryViewController()
-        VC.delegate = self
-        VC.modalTransitionStyle = .flipHorizontal
-        present(VC, animated: true)
+        let vc = CategoryViewController()
+        vc.viewModel = CategoryViewModel()
+        vc.viewModel?.currentCategory = category ?? ""
+        vc.delegate = self
+        vc.modalTransitionStyle = .flipHorizontal
+        present(vc, animated: true)
     }
 }
 

@@ -20,6 +20,7 @@ final class TrackersCell: UICollectionViewCell {
     var trackerId: UUID?
     var indexPath: IndexPath?
     var completedDays: Int?
+    var pinned: Bool = false
     
     let colorView = UIView()
     let trackerName = UILabel()
@@ -28,12 +29,23 @@ final class TrackersCell: UICollectionViewCell {
     let day = UILabel()
     let button = UIButton()
     let done = UIImageView()
+    let pin = UIImageView()
+    
+    private let analyticsService = AnalyticsService()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupViews()
         setupConstraints()
+    }
+    
+    func setupPin() {
+        if pinned == false {
+            pin.isHidden = true
+        } else {
+            pin.isHidden = false
+        }
     }
     
     private func setupViews() {
@@ -71,6 +83,10 @@ final class TrackersCell: UICollectionViewCell {
         done.image = UIImage(named: "Done")
         button.addSubview(done)
         done.translatesAutoresizingMaskIntoConstraints = false
+        
+        pin.image = UIImage(named: "Pin")
+        colorView.addSubview(pin)
+        pin.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupConstraints() {
@@ -79,32 +95,42 @@ final class TrackersCell: UICollectionViewCell {
             colorView.topAnchor.constraint(equalTo: contentView.topAnchor),
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorView.heightAnchor.constraint(equalToConstant: 90),
+            
             trackerName.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
             trackerName.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
             trackerName.bottomAnchor.constraint(equalTo: colorView.bottomAnchor, constant: -12),
+            
             whiteRound.heightAnchor.constraint(equalToConstant: 24),
             whiteRound.widthAnchor.constraint(equalToConstant: 24),
             whiteRound.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
             whiteRound.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            
             emoji.heightAnchor.constraint(equalToConstant: 22),
             emoji.widthAnchor.constraint(equalToConstant: 16),
             emoji.centerXAnchor.constraint(equalTo: whiteRound.centerXAnchor),
             emoji.centerYAnchor.constraint(equalTo: whiteRound.centerYAnchor),
+            
             day.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             day.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 16),
             day.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
+            
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 34),
             button.widthAnchor.constraint(equalToConstant: 34),
+            
             done.heightAnchor.constraint(equalToConstant: 12),
             done.widthAnchor.constraint(equalToConstant: 12),
             done.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            done.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+            done.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            
+            pin.centerYAnchor.constraint(equalTo: whiteRound.centerYAnchor),
+            pin.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4)
         ])
     }
     
     @objc private func trackerButtonClicked(_ sender: Any?) {
+        analyticsService.didTapTrackerOnMain()
         guard let trackerId = trackerId, let indexPath = indexPath else { return }
         if isCompletedToday {
             delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)

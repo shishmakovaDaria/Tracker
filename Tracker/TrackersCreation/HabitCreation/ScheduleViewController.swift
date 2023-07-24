@@ -16,13 +16,13 @@ final class ScheduleViewController: UIViewController {
     
     private let tableView = UITableView()
     private let days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    private var schedule = Set<WeekDay>()
+    var schedule = Set<WeekDay>()
     var delegate: ScheduleViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         configureView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -46,6 +46,7 @@ final class ScheduleViewController: UIViewController {
         let doneButton = UIButton()
         doneButton.backgroundColor = .ypBlack
         doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         doneButton.layer.cornerRadius = 16
         doneButton.addTarget(self, action: #selector(doneButtonDidTap(_:)), for: .touchUpInside)
@@ -63,6 +64,7 @@ final class ScheduleViewController: UIViewController {
     private func addTableView() {
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -147,12 +149,45 @@ extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = days[indexPath.row]
-        cell.backgroundColor = .backgroundDay
+        cell.backgroundColor = .background
         let toggle = UISwitch()
         toggle.tag = indexPath.row
         toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         toggle.onTintColor = .ypBlue
         cell.accessoryView = toggle
+        
+        for day in schedule {
+            switch day {
+            case .monday:
+                if indexPath.row == 0 {
+                    toggle.isOn = true
+                }
+            case .tuesday:
+                if indexPath.row == 1 {
+                    toggle.isOn = true
+                }
+            case .wednesday:
+                if indexPath.row == 2 {
+                    toggle.isOn = true
+                }
+            case .thursday:
+                if indexPath.row == 3 {
+                    toggle.isOn = true
+                }
+            case .friday:
+                if indexPath.row == 4 {
+                    toggle.isOn = true
+                }
+            case .saturday:
+                if indexPath.row == 5 {
+                    toggle.isOn = true
+                }
+            case .sunday:
+                if indexPath.row == 6 {
+                    toggle.isOn = true
+                }
+            }
+        }
         
         if indexPath.row == days.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
