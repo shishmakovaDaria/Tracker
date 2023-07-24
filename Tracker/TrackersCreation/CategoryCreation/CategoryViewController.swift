@@ -173,4 +173,37 @@ extension CategoryViewController: UITableViewDelegate {
         delegate?.addCategory(chosenCategory: chosenCategory ?? "")
         dismiss(animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let categoryToEditOrDelete = viewModel?.categoryAtIndexPath(at: indexPath)
+        
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    let vc = EditCategoryViewController()
+                    vc.category = categoryToEditOrDelete
+                    self?.present(vc, animated: true)
+                },
+                UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                    let alert = UIAlertController(title: "Эта категория точно не нужна?",
+                                                  message: nil,
+                                                  preferredStyle: .actionSheet)
+                    
+                    let action1 = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.viewModel?.deleteCategory(categoryToDelete: categoryToEditOrDelete ?? "")
+                    }
+                    
+                    let action2 = UIAlertAction(title: "Отменить", style: .cancel) {_ in
+                        alert.dismiss(animated: true)
+                    }
+                    
+                    alert.addAction(action1)
+                    alert.addAction(action2)
+
+                    self?.present(alert, animated: true)
+                },
+            ])
+        })
+    }
 }

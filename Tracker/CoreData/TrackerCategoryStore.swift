@@ -75,6 +75,36 @@ final class TrackerCategoryStore: NSObject {
             try context.save()
         }
     }
+    
+    func editCategory(categoryToEdit: String, newCategory: String) throws {
+        guard let objects = fetchedResultsController.fetchedObjects else { return }
+        
+        for object in objects {
+            if object.header == categoryToEdit {
+                object.header = newCategory
+                try context.save()
+            }
+        }
+        
+        let trackersFetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        trackersFetchRequest.predicate = NSPredicate(format: "category = '\(categoryToEdit)'")
+        let trackers = try context.fetch(trackersFetchRequest)
+        for tracker in trackers {
+            tracker.setValue(newCategory, forKey: "category")
+            try context.save()
+        }
+    }
+    
+    func deleteCategory(categoryToDelete: String) throws {
+        guard let objects = fetchedResultsController.fetchedObjects else { return }
+        
+        for object in objects {
+            if object.header == categoryToDelete {
+                context.delete(object)
+                try context.save()
+            }
+        }
+    }
 }
 
 //MARK: - NSFetchedResultsControllerDelegate

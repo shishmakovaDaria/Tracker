@@ -28,6 +28,7 @@
 		613B25C22A2A684700DB355F /* EventCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613B25C12A2A684700DB355F /* EventCreationViewController.swift */; };
 		6142AA4B2A2924970050A19A /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6142AA4A2A2924970050A19A /* Tracker.swift */; };
 		615847BC2A686CBC00A0CC53 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615847BB2A686CBC00A0CC53 /* AnalyticsService.swift */; };
+		61782E2E2A6DC51100C602EC /* EditCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61782E2D2A6DC51100C602EC /* EditCategoryViewController.swift */; };
 		617EC04A2A65CF4500E324C7 /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617EC0492A65CF4500E324C7 /* TrackerTests.swift */; };
 		617EC0522A65CF5300E324C7 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 617EC0512A65CF5300E324C7 /* SnapshotTesting */; };
 		617EC0562A66F2CC00E324C7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 617EC0582A66F2CC00E324C7 /* Localizable.strings */; };
@@ -86,6 +87,7 @@
 		613B25C12A2A684700DB355F /* EventCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationViewController.swift; sourceTree = "<group>"; };
 		6142AA4A2A2924970050A19A /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		615847BB2A686CBC00A0CC53 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		61782E2D2A6DC51100C602EC /* EditCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryViewController.swift; sourceTree = "<group>"; };
 		617EC0472A65CF4500E324C7 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		617EC0492A65CF4500E324C7 /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		617EC0572A66F2CC00E324C7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				61847E662A59F34400425F7A /* CategoryViewModel.swift */,
 				61847E682A59F37400425F7A /* Observable.swift */,
 				61D1E21D2A2A7D8E00A9F89E /* NewCategoryViewController.swift */,
+				61782E2D2A6DC51100C602EC /* EditCategoryViewController.swift */,
 			);
 			path = CategoryCreation;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				6109B7432A0D683C00C46EF0 /* TabBarController.swift in Sources */,
 				613465A32A3DB169008A31F9 /* UIColorMarshalling.swift in Sources */,
 				61D1B9452A4118FD00E7B5EA /* CreationViewControllerDelegate.swift in Sources */,
+				61782E2E2A6DC51100C602EC /* EditCategoryViewController.swift in Sources */,
 				61D1E21C2A2A757D00A9F89E /* CategoryViewController.swift in Sources */,
 				610A75BE2A3F6A1F004AF86A /* TrackerRecordStore.swift in Sources */,
 				61F2D5832A0C32C4005C5386 /* UIColor.swift in Sources */,

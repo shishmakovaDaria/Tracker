@@ -422,7 +422,7 @@ extension TrackersViewController: TrackersCellDelegate {
         let currentDate = Date()
         if Calendar.current.isDate(currentDate, inSameDayAs: datePicker.date) || datePicker.date < currentDate  {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-            try! trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            try? trackerRecordStore.addNewTrackerRecord(trackerRecord)
         } else {
             return
         }
@@ -437,7 +437,7 @@ extension TrackersViewController: TrackersCellDelegate {
 //MARK: - CreationViewControllerDelegate
 extension TrackersViewController: CreationViewControllerDelegate {
     func addNewTracker(tracker: Tracker, header: String) {
-        try! trackerStore.addNewTracker(tracker, currentCategory: header)
+        try? trackerStore.addNewTracker(tracker, currentCategory: header)
     }
 }
 
@@ -463,6 +463,10 @@ extension TrackersViewController: TrackerStoreDelegate {
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func storeCategory(_ store: TrackerCategoryStore) {
         categories = updateCategoriesFromStore()
+        visibleCategories = categories
+        collectionView.reloadData()
+        reloadVisibleCategories()
+        reloadPlaceholder()
     }
 }
 
