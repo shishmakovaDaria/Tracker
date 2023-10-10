@@ -9,10 +9,7 @@ import Foundation
 import UIKit
 
 final class EditCategoryViewController: UIViewController {
-    
-    var category: String?
-    private var newCategory: String?
-    private let trackerCategoryStore = TrackerCategoryStore()
+    var viewModel: EditCategoryViewModel?
     
     private lazy var label: UILabel = {
         let label = UILabel()
@@ -24,7 +21,7 @@ final class EditCategoryViewController: UIViewController {
     
     private lazy var categoryName: CustomTextField = {
         let categoryName = CustomTextField()
-        categoryName.text = category
+        categoryName.text = viewModel?.category
         categoryName.textColor = .ypBlack
         categoryName.font = .systemFont(ofSize: 17)
         categoryName.backgroundColor = .background
@@ -46,24 +43,31 @@ final class EditCategoryViewController: UIViewController {
         doneButton.isEnabled = false
         doneButton.addTarget(self, action: #selector(doneButtonDidTap(_:)), for: .touchUpInside)
         return doneButton
-        
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhite
         setupUI()
         setupConstraints()
+        
+        viewModel?.$newCategory.bind { [weak self] _ in
+            self?.doneButton.backgroundColor = .ypBlack
+            self?.doneButton.isEnabled = true
+        }
+    }
+    
+    @objc private func doneButtonDidTap(_ sender: Any?) {
+        viewModel?.editCategory()
+        dismiss(animated: true)
     }
     
     private func setupUI() {
-        view.addSubview(label)
-        view.addSubview(categoryName)
-        view.addSubview(doneButton)
+        view.backgroundColor = .ypWhite
         
-        label.translatesAutoresizingMaskIntoConstraints = false
-        categoryName.translatesAutoresizingMaskIntoConstraints = false
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        [label, categoryName, doneButton].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func setupConstraints() {
@@ -82,11 +86,6 @@ final class EditCategoryViewController: UIViewController {
             doneButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
         ])
     }
-    
-    @objc private func doneButtonDidTap(_ sender: Any?) {
-        try? trackerCategoryStore.editCategory(categoryToEdit: category ?? "", newCategory: newCategory ?? "")
-        dismiss(animated: true)
-    }
 }
 
 //MARK: - UITextFieldDelegate
@@ -95,11 +94,8 @@ extension EditCategoryViewController: UITextFieldDelegate {
         categoryName.resignFirstResponder()
         
         if let text = categoryName.text {
-            newCategory = text
+            self.viewModel?.newCategoryCreated(text: text)
         }
-        
-        doneButton.backgroundColor = .ypBlack
-        doneButton.isEnabled = true
         
         return true
     }

@@ -163,8 +163,9 @@ final class TrackersViewController: UIViewController {
     @objc private func filterButtonDidTap(_ sender: Any?) {
         analyticsService.didTapFilterOnMain()
         let vc = FilterViewController()
-        vc.delegate = self
-        vc.currentFiler = trackerFiler
+        vc.viewModel = FilterViewModel()
+        vc.viewModel?.delegate = self
+        vc.viewModel?.currentFiler = trackerFiler
         present(vc, animated: true)
     }
     

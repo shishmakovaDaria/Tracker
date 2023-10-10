@@ -18,6 +18,7 @@ final class TabBarController: UITabBarController {
                                                          selectedImage: nil)
         
         let statisticsViewController = StatisticsViewController()
+        statisticsViewController.viewModel = StatisticsViewModel()
         statisticsViewController.tabBarItem = UITabBarItem(title: "Statistics".localized(),
                                                            image: UIImage(systemName: "hare.fill"),
                                                            selectedImage: nil)
