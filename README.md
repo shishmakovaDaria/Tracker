@@ -37,7 +37,7 @@
 - SPM
 - YandexMobileMetrica
 - SnapshotTesting
-- AutoLayout programmaticaly
+- AutoLayout programmatically
 - Localization
 - Dark Mode
 
