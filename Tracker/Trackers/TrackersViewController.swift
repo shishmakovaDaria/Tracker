@@ -254,17 +254,19 @@ final class TrackersViewController: UIViewController {
     
     private func editTracker(_ trackerId: UUID) {
         analyticsService.didTapEditOnMain()
-        let vc = TrackerEditingViewController()
-        vc.delegate = self
         let trackerToEdit = trackerStore.trackers.filter { tracker in
             return tracker.id == trackerId
         }
-        vc.trackerToEdit = trackerToEdit[0]
-        vc.category = trackerStore.currentCategory(trackerId)
         let trackerRecord = completedTrackers.filter { record in
             return record.id == trackerId
         }
-        vc.trackerRecord = trackerRecord.count
+        
+        let vc = TrackerEditingViewController()
+        vc.viewModel = TrackerEditingViewModel()
+        vc.viewModel?.delegate = self
+        vc.viewModel?.trackerToEdit = trackerToEdit[0]
+        vc.viewModel?.trackerRecord = trackerRecord.count
+        vc.viewModel?.updateValues(category: trackerStore.currentCategory(trackerId))
         present(vc, animated: true)
     }
     

@@ -14,30 +14,88 @@ protocol TrackersCellDelegate: AnyObject {
 }
 
 final class TrackersCell: UICollectionViewCell {
-    
-    weak var delegate: TrackersCellDelegate?
     var isCompletedToday: Bool = false
     var trackerId: UUID?
     var indexPath: IndexPath?
     var completedDays: Int?
     var pinned: Bool = false
     
-    let colorView = UIView()
-    let trackerName = UILabel()
-    let emoji = UILabel()
-    let whiteRound = UIView()
-    let day = UILabel()
-    let button = UIButton()
-    let done = UIImageView()
-    let pin = UIImageView()
-    
     private let analyticsService = AnalyticsService()
+    weak var delegate: TrackersCellDelegate?
+    
+    lazy var colorView: UIView = {
+        let colorView = UIView()
+        colorView.layer.cornerRadius = 16
+        colorView.layer.masksToBounds = true
+        return colorView
+    }()
+    
+    lazy var trackerName: UILabel = {
+        let trackerName = UILabel()
+        trackerName.font = .systemFont(ofSize: 12)
+        trackerName.textColor = .white
+        trackerName.numberOfLines = 2
+        return trackerName
+    }()
+    
+    lazy var emoji: UILabel = {
+        let emoji = UILabel()
+        emoji.font = .systemFont(ofSize: 12)
+        return emoji
+    }()
+    
+    lazy var day: UILabel = {
+        let day = UILabel()
+        day.font = .systemFont(ofSize: 12)
+        day.textColor = .ypBlack
+        return day
+    }()
+    
+    lazy var button: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(trackerButtonClicked(_:)), for: .touchUpInside)
+        button.tintColor = .white
+        return button
+    }()
+    
+    lazy var done: UIImageView = {
+        let done = UIImageView()
+        done.image = UIImage(named: "Done")
+        return done
+    }()
+    
+    private lazy var pin: UIImageView = {
+        let pin = UIImageView()
+        pin.image = UIImage(named: "Pin")
+        return pin
+    }()
+    
+    private lazy var whiteRound: UIView = {
+        let whiteRound = UIView()
+        whiteRound.layer.cornerRadius = 12
+        whiteRound.layer.masksToBounds = true
+        whiteRound.backgroundColor = .white.withAlphaComponent(0.3)
+        return whiteRound
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        setupViews()
+        setupUI()
         setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func trackerButtonClicked(_ sender: Any?) {
+        analyticsService.didTapTrackerOnMain()
+        guard let trackerId = trackerId, let indexPath = indexPath else { return }
+        if isCompletedToday {
+            delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)
+        } else {
+            delegate?.markTrackerAsDone(id: trackerId, at: indexPath)
+        }
     }
     
     func setupPin() {
@@ -48,45 +106,21 @@ final class TrackersCell: UICollectionViewCell {
         }
     }
     
-    private func setupViews() {
-        colorView.layer.cornerRadius = 16
-        colorView.layer.masksToBounds = true
-        contentView.addSubview(colorView)
-        colorView.translatesAutoresizingMaskIntoConstraints = false
+    private func setupUI() {
+        [colorView, day, button].forEach {
+            contentView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        trackerName.font = .systemFont(ofSize: 12)
-        trackerName.textColor = .white
-        trackerName.numberOfLines = 2
-        colorView.addSubview(trackerName)
-        trackerName.translatesAutoresizingMaskIntoConstraints = false
+        [trackerName, whiteRound, pin].forEach {
+            colorView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
-        whiteRound.layer.cornerRadius = 12
-        whiteRound.layer.masksToBounds = true
-        whiteRound.backgroundColor = .white.withAlphaComponent(0.3)
-        colorView.addSubview(whiteRound)
-        whiteRound.translatesAutoresizingMaskIntoConstraints = false
-        
-        emoji.font = .systemFont(ofSize: 12)
         whiteRound.addSubview(emoji)
-        emoji.translatesAutoresizingMaskIntoConstraints = false
-        
-        day.font = .systemFont(ofSize: 12)
-        day.textColor = .ypBlack
-        contentView.addSubview(day)
-        day.translatesAutoresizingMaskIntoConstraints = false
-        
-        button.addTarget(self, action: #selector(trackerButtonClicked(_:)), for: .touchUpInside)
-        button.tintColor = .white
-        contentView.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        done.image = UIImage(named: "Done")
         button.addSubview(done)
-        done.translatesAutoresizingMaskIntoConstraints = false
         
-        pin.image = UIImage(named: "Pin")
-        colorView.addSubview(pin)
-        pin.translatesAutoresizingMaskIntoConstraints = false
+        [emoji, done].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
     }
     
     private func setupConstraints() {
@@ -127,19 +161,5 @@ final class TrackersCell: UICollectionViewCell {
             pin.centerYAnchor.constraint(equalTo: whiteRound.centerYAnchor),
             pin.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4)
         ])
-    }
-    
-    @objc private func trackerButtonClicked(_ sender: Any?) {
-        analyticsService.didTapTrackerOnMain()
-        guard let trackerId = trackerId, let indexPath = indexPath else { return }
-        if isCompletedToday {
-            delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)
-        } else {
-            delegate?.markTrackerAsDone(id: trackerId, at: indexPath)
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
