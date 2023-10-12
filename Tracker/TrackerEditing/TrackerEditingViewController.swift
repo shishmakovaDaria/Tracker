@@ -294,7 +294,7 @@ extension TrackerEditingViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else { return UICollectionViewCell()}
             
-            cell.emoji.text = viewModel?.emojies[indexPath.row]
+            cell.emoji.text = Constants.emojies[indexPath.row]
             
             if cell.emoji.text == viewModel?.newTrackersEmoji {
                 cell.contentView.backgroundColor = .ypLightGray
@@ -307,7 +307,7 @@ extension TrackerEditingViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else { return UICollectionViewCell()}
             
-            cell.colorView.backgroundColor = viewModel?.colors[indexPath.row]
+            cell.colorView.backgroundColor = Constants.colors[indexPath.row]
 
             let cellColor = uiColorMarshalling.hexString(from: cell.colorView.backgroundColor ?? UIColor())
             let trackerColor = uiColorMarshalling.hexString(from: viewModel?.newTrackersColor ?? UIColor())
@@ -365,15 +365,15 @@ extension TrackerEditingViewController: UICollectionViewDelegate {
 //MARK: - UITableViewDataSource
 extension TrackerEditingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel?.tableHeaders.count ?? 0
+        return Constants.tableHeaders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
-        cell.header.text = viewModel?.tableHeaders[indexPath.row]
+        cell.header.text = Constants.tableHeaders[indexPath.row]
         
-        if indexPath.row == (viewModel?.tableHeaders.count ?? 0) - 1 {
+        if indexPath.row == Constants.tableHeaders.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
             let scheduleString = WeekDay.monday.makeString(viewModel?.newTrackersSchedule ?? Set<WeekDay>())
             cell.addSecondLabel(chosen: scheduleString)
@@ -398,8 +398,9 @@ extension TrackerEditingViewController: UITableViewDelegate {
             present(vc, animated: true)
         } else {
             let vc = ScheduleViewController()
-            vc.schedule = viewModel?.newTrackersSchedule ?? Set<WeekDay>()
-            vc.delegate = self
+            vc.viewModel = ScheduleViewModel()
+            vc.viewModel?.schedule = viewModel?.newTrackersSchedule ?? Set<WeekDay>()
+            vc.viewModel?.delegate = self
             vc.modalTransitionStyle = .flipHorizontal
             present(vc, animated: true)
         }

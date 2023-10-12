@@ -1,20 +1,17 @@
 //
-//  HabitCreationViewModel.swift
+//  EventCreationViewModel.swift
 //  Tracker
 //
-//  Created by Дарья Шишмакова on 11.10.2023.
+//  Created by Дарья Шишмакова on 12.10.2023.
 //
 
 import Foundation
 import UIKit
 
-final class HabitCreationViewModel {
+final class EventCreationViewModel {
     
     @Observable
     private(set) var trackersName: String = ""
-    
-    @Observable
-    private(set) var trackersSchedule = Set<WeekDay>()
     
     @Observable
     private(set) var trackersEmoji: String = ""
@@ -29,10 +26,6 @@ final class HabitCreationViewModel {
     
     func trackerNameCreated(name: String) {
         trackersName = name
-    }
-    
-    func scheduleCreated(schedule: Set<WeekDay>) {
-        trackersSchedule = schedule
     }
     
     func emojiChosen(emoji: String) {
@@ -51,8 +44,7 @@ final class HabitCreationViewModel {
         if trackersCategory.isEmpty == false,
            trackersName.isEmpty == false,
            trackersEmoji.isEmpty == false,
-           trackersSchedule.isEmpty == false,
-           trackersColor != UIColor() {
+           trackersColor != UIColor.clear {
             return true
         }
         return false
@@ -65,7 +57,7 @@ final class HabitCreationViewModel {
             color: trackersColor,
             emoji: trackersEmoji,
             pinned: false,
-            schedule: trackersSchedule)
+            schedule: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
         delegate?.addNewTracker(tracker: newTracker, header: trackersCategory)
     }
 }

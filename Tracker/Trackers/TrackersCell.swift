@@ -8,11 +8,6 @@
 import Foundation
 import UIKit
 
-protocol TrackersCellDelegate: AnyObject {
-    func markTrackerAsDone(id: UUID, at indexPath: IndexPath)
-    func unmarkTrackerAsDone(id: UUID, at indexPath: IndexPath)
-}
-
 final class TrackersCell: UICollectionViewCell {
     var isCompletedToday: Bool = false
     var trackerId: UUID?

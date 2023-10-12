@@ -133,7 +133,6 @@ final class HabitCreationViewController: UIViewController {
         setupUI()
         setupConstraints()
         bind()
-        tableView.backgroundColor = .purple
     }
     
     @objc private func cancelButtonDidTap(_ sender: Any?) {
@@ -281,14 +280,14 @@ extension HabitCreationViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else { return UICollectionViewCell()}
             
-            cell.emoji.text = viewModel?.emojies[indexPath.row]
+            cell.emoji.text = Constants.emojies[indexPath.row]
             
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else { return UICollectionViewCell()}
             
-            cell.colorView.backgroundColor = viewModel?.colors[indexPath.row]
+            cell.colorView.backgroundColor = Constants.colors[indexPath.row]
             
             return cell
         }
@@ -340,15 +339,15 @@ extension HabitCreationViewController: UICollectionViewDelegate {
 //MARK: - UITableViewDataSource
 extension HabitCreationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel?.tableHeaders.count ?? 0
+        return Constants.tableHeaders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: CustomTableViewCell.identifier, for: indexPath) as? CustomTableViewCell else { return UITableViewCell()}
-        cell.header.text = viewModel?.tableHeaders[indexPath.row]
+        cell.header.text = Constants.tableHeaders[indexPath.row]
         
-        if indexPath.row == (viewModel?.tableHeaders.count ?? 0) - 1 {
+        if indexPath.row == Constants.tableHeaders.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -375,8 +374,9 @@ extension HabitCreationViewController: UITableViewDelegate {
             present(vc, animated: true)
         } else {
             let vc = ScheduleViewController()
-            vc.schedule = viewModel?.trackersSchedule ?? Set<WeekDay>()
-            vc.delegate = self
+            vc.viewModel = ScheduleViewModel()
+            vc.viewModel?.schedule = viewModel?.trackersSchedule ?? Set<WeekDay>()
+            vc.viewModel?.delegate = self
             vc.modalTransitionStyle = .flipHorizontal
             present(vc, animated: true)
         }

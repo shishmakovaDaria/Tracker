@@ -56,7 +56,8 @@ final class TrackersCreationViewController: UIViewController {
     
     @objc private func eventButtonDidTap(_ sender: Any?) {
         let vc = EventCreationViewController()
-        vc.delegate = self.controller
+        vc.viewModel = EventCreationViewModel()
+        vc.viewModel?.delegate = self.controller
         present(vc, animated: true)
     }
     
