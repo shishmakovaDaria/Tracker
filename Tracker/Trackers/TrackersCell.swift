@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 
+struct TrackersCellModel {
+    let name: String
+    let color: UIColor
+    let emoji: String
+    let isCompletedToday: Bool
+    let completedDays: Int
+    let pinned: Bool
+}
+
 final class TrackersCell: UICollectionViewCell {
-    var isCompletedToday: Bool = false
-    var trackerId: UUID?
-    var indexPath: IndexPath?
-    var completedDays: Int?
-    var pinned: Bool = false
-    
-    private let analyticsService = AnalyticsService()
-    weak var delegate: TrackersCellDelegate?
-    
     lazy var colorView: UIView = {
         let colorView = UIView()
         colorView.layer.cornerRadius = 16
@@ -83,21 +83,38 @@ final class TrackersCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var buttonTappedHandler: (() -> Void)?
+       
     @objc private func trackerButtonClicked(_ sender: Any?) {
-        analyticsService.didTapTrackerOnMain()
-        guard let trackerId = trackerId, let indexPath = indexPath else { return }
-        if isCompletedToday {
-            delegate?.unmarkTrackerAsDone(id: trackerId, at: indexPath)
-        } else {
-            delegate?.markTrackerAsDone(id: trackerId, at: indexPath)
-        }
+        buttonTappedHandler?()
     }
     
-    func setupPin() {
+    func configureCell(cellModel: TrackersCellModel) {
+        trackerName.text = cellModel.name
+        colorView.backgroundColor = cellModel.color
+        emoji.text = cellModel.emoji
+        day.text = String.getDay(count: UInt(cellModel.completedDays))
+        setupPin(pinned: cellModel.pinned)
+        configureButton(cellModel: cellModel)
+    }
+    
+    func setupPin(pinned: Bool) {
         if pinned == false {
             pin.isHidden = true
         } else {
             pin.isHidden = false
+        }
+    }
+    
+    private func configureButton(cellModel: TrackersCellModel) {
+        if cellModel.isCompletedToday {
+            let buttonImage = UIImage(named: "DoneButton")?.withTintColor(cellModel.color)
+            button.setImage(buttonImage, for: .normal)
+            done.isHidden = false
+        } else {
+            let buttonImage = UIImage(named: "AddButton")?.withTintColor(cellModel.color)
+            done.isHidden = true
+            button.setImage(buttonImage, for: .normal)
         }
     }
     
