@@ -8,41 +8,29 @@
 import Foundation
 import UIKit
 
-protocol ScheduleViewControllerDelegate: AnyObject {
-    func addSchedule(chosenSchedule: Set<WeekDay>)
-}
-
 final class ScheduleViewController: UIViewController {
+    var viewModel: ScheduleViewModel?
     
-    private let tableView = UITableView()
-    private let days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    var schedule = Set<WeekDay>()
-    var delegate: ScheduleViewControllerDelegate?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .ypWhite
-        configureView()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        addTableView()
-    }
-    
-    private func configureView() {
+    private lazy var label: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
         label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
-        ])
-        
+        return label
+    }()
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.layer.cornerRadius = 16
+        tableView.rowHeight = 75
+        tableView.separatorColor = .ypGray
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        return tableView
+    }()
+    
+    private lazy var doneButton: UIButton = {
         let doneButton = UIButton()
         doneButton.backgroundColor = .ypBlack
         doneButton.setTitle("Готово", for: .normal)
@@ -50,93 +38,48 @@ final class ScheduleViewController: UIViewController {
         doneButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         doneButton.layer.cornerRadius = 16
         doneButton.addTarget(self, action: #selector(doneButtonDidTap(_:)), for: .touchUpInside)
-        view.addSubview(doneButton)
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        return doneButton
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        setupConstraints()
+    }
+    
+    @objc private func doneButtonDidTap(_ sender: Any?) {
+        viewModel?.addSchedule()
+        dismiss(animated: true)
+    }
+    
+    @objc private func switchChanged(_ sender: UISwitch) {
+        viewModel?.updateCurrentSchedule(senderTag: sender.tag, senderIsOn: sender.isOn)
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .ypWhite
         
+        [label, doneButton, tableView].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
+            
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 79),
+            tableView.heightAnchor.constraint(equalToConstant: 525),
+            
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             doneButton.heightAnchor.constraint(equalToConstant: 60),
             doneButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50)
         ])
-    }
-    
-    private func addTableView() {
-        tableView.layer.cornerRadius = 16
-        tableView.rowHeight = 75
-        tableView.separatorColor = .ypGray
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 79),
-            tableView.heightAnchor.constraint(equalToConstant: 525)
-        ])
-    }
-    
-    @objc private func doneButtonDidTap(_ sender: Any?) {
-        delegate?.addSchedule(chosenSchedule: schedule)
-        dismiss(animated: true)
-    }
-    
-    @objc private func switchChanged(_ sender: UISwitch) {
-        if sender.tag == 0 {
-            if sender.isOn {
-                schedule.insert(.monday)
-            } else {
-                schedule.remove(.monday)
-            }
-        }
-        
-        if sender.tag == 1 {
-            if sender.isOn {
-                schedule.insert(.tuesday)
-            } else {
-                schedule.remove(.tuesday)
-            }
-        }
-        
-        if sender.tag == 2 {
-            if sender.isOn {
-                schedule.insert(.wednesday)
-            } else {
-                schedule.remove(.wednesday)
-            }
-        }
-        
-        if sender.tag == 3 {
-            if sender.isOn {
-                schedule.insert(.thursday)
-            } else {
-                schedule.remove(.thursday)
-            }
-        }
-        
-        if sender.tag == 4 {
-            if sender.isOn {
-                schedule.insert(.friday)
-            } else {
-                schedule.remove(.friday)
-            }
-        }
-        
-        if sender.tag == 5 {
-            if sender.isOn {
-                schedule.insert(.saturday)
-            } else {
-                schedule.remove(.saturday)
-            }
-        }
-        
-        if sender.tag == 6 {
-            if sender.isOn {
-                schedule.insert(.sunday)
-            } else {
-                schedule.remove(.sunday)
-            }
-        }
     }
 }
 
@@ -148,7 +91,7 @@ extension ScheduleViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = days[indexPath.row]
+        cell.textLabel?.text = viewModel?.days[indexPath.row]
         cell.backgroundColor = .background
         let toggle = UISwitch()
         toggle.tag = indexPath.row
@@ -156,40 +99,28 @@ extension ScheduleViewController: UITableViewDataSource {
         toggle.onTintColor = .ypBlue
         cell.accessoryView = toggle
         
-        for day in schedule {
-            switch day {
-            case .monday:
-                if indexPath.row == 0 {
-                    toggle.isOn = true
-                }
-            case .tuesday:
-                if indexPath.row == 1 {
-                    toggle.isOn = true
-                }
-            case .wednesday:
-                if indexPath.row == 2 {
-                    toggle.isOn = true
-                }
-            case .thursday:
-                if indexPath.row == 3 {
-                    toggle.isOn = true
-                }
-            case .friday:
-                if indexPath.row == 4 {
-                    toggle.isOn = true
-                }
-            case .saturday:
-                if indexPath.row == 5 {
-                    toggle.isOn = true
-                }
-            case .sunday:
-                if indexPath.row == 6 {
-                    toggle.isOn = true
+        if let viewModel = viewModel {
+            for day in viewModel.schedule {
+                switch day {
+                case .monday:
+                    if indexPath.row == 0 { toggle.isOn = true }
+                case .tuesday:
+                    if indexPath.row == 1 { toggle.isOn = true }
+                case .wednesday:
+                    if indexPath.row == 2 { toggle.isOn = true }
+                case .thursday:
+                    if indexPath.row == 3 { toggle.isOn = true }
+                case .friday:
+                    if indexPath.row == 4 { toggle.isOn = true }
+                case .saturday:
+                    if indexPath.row == 5 { toggle.isOn = true }
+                case .sunday:
+                    if indexPath.row == 6 { toggle.isOn = true }
                 }
             }
         }
         
-        if indexPath.row == days.count - 1 {
+        if indexPath.row == (viewModel?.days.count ?? 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.size.width)
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)

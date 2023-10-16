@@ -14,6 +14,7 @@ final class TrackersNavigationController: UINavigationController {
     private let analyticsService = AnalyticsService()
     
     override func viewDidLoad() {
+        controller.viewModel = TrackersViewModel()
         viewControllers = [controller]
         addPlusButton()
     }

@@ -16,13 +16,3 @@ struct Tracker {
     let pinned: Bool
     let schedule: Set<WeekDay>
 }
-
-struct TrackerCategory {
-    let header: String
-    let trackers: [Tracker]
-}
-
-struct TrackerRecord {
-    let id: UUID
-    let date: Date
-}
